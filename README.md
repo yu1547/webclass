@@ -15,3 +15,7 @@ https://www.youtube.com/watch?v=6EVgmpm4z5U
 
 # beautiful login css
 https://www.youtube.com/watch?v=hlwlM4a5rxg
+
+# slidebar
+https://www.youtube.com/watch?v=V0O4pY2xX10
+![Uploading 圖片.png…]()
