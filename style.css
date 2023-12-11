@@ -4,7 +4,7 @@
 }
 body {
   font-family: 'Ubuntu', Tahoma, Geneva, Verdana, sans-serif;
-  background: url(./images/street.gif);
+  background: url("https://yu1547.github.io/webclass/images/street.gif");
   color: #fff;
   display: flex;
   align-items: center;
