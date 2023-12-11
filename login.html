@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login</title>
+    <style>
+        @font-face {
+            font-family: 'Ubuntu';
+            src: url('Ubuntu-Medium.ttf'); 
+        }
+    body {
+        font-family: 'Ubuntu', Tahoma, Geneva, Verdana, sans-serif;
+        background: url(street.gif);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+    #login-form {
+        background-color: rgba(255, 255, 255, 0.392);
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    #login-form h2 {
+        color: #000000;
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #000000;
+        text-align: left;
+    }
+    input {
+        width: 100%;
+        padding: 12px;
+        margin-bottom: 16px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+    button {
+        background-color: #d04548;
+        color: #fff;
+        padding: 14px 18px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+    
+    button:hover {
+        background-color: #d40000; 
+    }
+</style>
+</head>
+<body>
+
+    <div id="login-form">
+        <h2>User Login</h2>
+        <form id="loginForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="button" onclick="validateLogin()" style="font-family: 'Ubuntu';">Login</button>
+        </form>
+    </div>
+
+    <script>
+        function validateLogin() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+        
+            // 可以向後端請求驗證
+        
+            if (username === "user" && password === "password") {
+                alert("Login successful!");
+                
+                // 登錄成功後跳轉到dashboard.html
+                window.location.href = "dashboard.html";
+            } else {
+                alert("Invalid username or password. Please try again.");
+            }
+        }
+    </script>
+
+</body>
+</html>
