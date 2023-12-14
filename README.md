@@ -16,14 +16,7 @@ https://www.youtube.com/watch?v=6EVgmpm4z5U
 # beautiful login css
 https://www.youtube.com/watch?v=hlwlM4a5rxg
 
-#資料結構與程式運行
-https://docs.google.com/document/d/1D9yfN1bOcb5xi2YJDEOA6kQywQpQfDJWNUoJfKOW-As/edit
-
-#版面
-https://www.canva.com/design/DAF0e5cgNB0/Z5aM-fkPzzUZ0CBxnNomjA/edit
 # slidebar
 https://www.youtube.com/watch?v=V0O4pY2xX10
 ![圖片](https://github.com/yu1547/webclass/assets/64255522/d2987265-f751-4335-9023-be280b1b4c41)
 
-#預下載圖片
-https://ottaster.com/js-image-preload/
