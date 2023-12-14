@@ -25,3 +25,5 @@ https://www.canva.com/design/DAF0e5cgNB0/Z5aM-fkPzzUZ0CBxnNomjA/edit
 https://www.youtube.com/watch?v=V0O4pY2xX10
 ![圖片](https://github.com/yu1547/webclass/assets/64255522/d2987265-f751-4335-9023-be280b1b4c41)
 
+#預下載圖片
+https://ottaster.com/js-image-preload/
