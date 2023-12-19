@@ -17,9 +17,13 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
+            <button onclick="redirectToRegistration()" style="font-family: 'Ubuntu';">Register</button>
+
             <button type="button" onclick="validateLogin()" style="font-family: 'Ubuntu';">Login</button>
         </form>
     </div>
+        
+    
 
     <script>
         function validateLogin() {
@@ -36,6 +40,10 @@
             } else {
                 alert("Invalid username or password. Please try again.");
             }
+        }
+        function redirectToRegistration() {
+            // Redirect to the registration page (replace 'registration.html' with your actual registration page)
+            window.location.href = "registration.html";
         }
     </script>
 
