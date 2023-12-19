@@ -1,12 +1,20 @@
 const express = require('express');
+var router = express.Router();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./users');
-
+const bcrypt = require('bcrypt');
 const app = express();
+const path = require('path');
+
+// 處理 GET 請求
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/login.html'));
+});
+
 
 // 連接到 MongoDB
-mongoose.connect('mongodb://localhost:27017/myapp', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb://localhost:27017/myapp');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -63,3 +71,4 @@ app.post('/register', async (req, res) => {
 });
 
 app.listen(3000, () => console.log('Server is running on port 3000...'));
+module.exports = router;

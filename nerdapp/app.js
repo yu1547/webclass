@@ -5,10 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 // 引入你的路由處理程序
-var indexRouter = require('./routes/index');
+// var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var loginRouter = require('./routes/login'); // 新增這行
-var registerRouter = require('./routes/register'); // 新增這行
+// var registerRouter = require('./routes/register'); // 新增這行
 
 var app = express();
 
@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', loginRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter); // 新增這行
-app.use('/register', registerRouter); // 新增這行
+app.use('/register', loginRouter); // 新增這行
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
