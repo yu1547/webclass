@@ -61,12 +61,21 @@ app.post('/calculate', async (req, res) => {
 
 // 處理註冊請求
 app.post('/register', async (req, res) => {
+    console.log("第一點")
+
+    // 檢查用戶名是否已經存在
+    const existingUser = await User.findOne({ username: req.body.username });
+    if (existingUser) {
+        return res.status(400).send('Username already exists.');
+    }    
+
+    
     let user = new User({
         username: req.body.username,
         password: req.body.password
     });
-
     user = await user.save();
+    console.log("第二點")
 
     res.send(user);
 });

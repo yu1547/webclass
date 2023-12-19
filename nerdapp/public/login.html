@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Login</title>
     <link rel="stylesheet" href="https://yu1547.github.io/webclass/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -17,7 +18,7 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
 
-            <button onclick="redirectToRegistration()" style="font-family: 'Ubuntu';">Register</button>
+            <button type="button" onclick="redirectToRegistration()" style="font-family: 'Ubuntu';">Register</button>
 
             <button type="button" onclick="validateLogin()" style="font-family: 'Ubuntu';">Login</button>
         </form>
@@ -27,24 +28,51 @@
 
     <script>
         function validateLogin() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
+            var username = $("#username").val();
+            var password = $("#password").val();
         
-            // 可以向後端請求驗證
-        
-            if (username === "user" && password === "password") {
-                alert("Login successful!");
-                
-                // 登錄成功後跳轉到dashboard.html
-                window.location.href = "dashboard.html";
-            } else {
-                alert("Invalid username or password. Please try again.");
-            }
+            $.ajax({
+                url: '/login',
+                type: 'POST',
+                data: {
+                    username: username,
+                    password: password
+                },
+                success: function(data) {
+                    alert("Login successful!");
+                    window.location.href = "dashboard.html";
+                },
+                error: function() {
+                    alert("Invalid username or password. Please try again.");
+                }
+            });
         }
+
         function redirectToRegistration() {
-            // Redirect to the registration page (replace 'registration.html' with your actual registration page)
-            window.location.href = "registration.html";
+            var username = $("#username").val();
+            var password = $("#password").val();
+
+            $.ajax({
+                url: '/register',
+                type: 'POST',
+                data: {
+                    username: username,
+                    password: password
+                },
+                success: function(data) {
+                    alert("Registration successful!");
+                    window.location.href = "./login.html";
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.responseText === 'Username already exists.') {
+                        alert("Username already exists. Please choose a different username.");
+                    } else {
+                        alert("Registration failed. Please try again.");
+                    }
+                }
+            });
         }
+
     </script>
 
 </body>
