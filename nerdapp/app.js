@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 掛載你的路由處理程序
-app.use('/', indexRouter);
+app.use('/', loginRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter); // 新增這行
 app.use('/register', registerRouter); // 新增這行
