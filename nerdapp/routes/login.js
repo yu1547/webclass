@@ -14,7 +14,8 @@ app.get('/', (req, res) => {
 
 
 // 連接到 MongoDB
-mongoose.connect('mongodb://localhost:27017/myapp');
+
+mongoose.connect('mongodb+srv://01157120:2R9cTuCe6gEDTcEe@nerds.m6vcm0c.mongodb.net/?retryWrites=true&w=majority');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

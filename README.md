@@ -1,3 +1,5 @@
+# nerd app網址
+https://frail-baseball-cap-eel.cyclic.app
 # webclass
  
 https://zhuanlan.zhihu.com/p/26401052
