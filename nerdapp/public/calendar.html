@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             margin: 20px;
             display: flex;
             justify-content: space-between; /* Added to distribute space between the calendar and sidebar */
@@ -19,84 +19,94 @@
         #calendar {
             width: 65%; /* Adjusted width for the calendar */
             margin-top: 50px; /* Added margin to create space above the calendar */
-        }
+            background-color: rgb(242, 242, 242);
+            padding:10px;
+            border-radius: 10px;
+            }
 
         #sidebar {
             width: 30%;
-            background-color: #f2f2f2;
+            background-color: rgb(242, 242, 242);
             padding: 10px;
             box-sizing: border-box;
+            margin-top: 50px;
+            border-radius: 25px;
         }
 
         #countdown,
         #todo-list {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            text-align:center;
+            background-color: #ffffff;
+            border-radius: 25px;
         }
 
         #navbar {
             position: fixed;
             top: 12px;
             left: px;
-            background-color: #333;
-            color: #fff;
+            background-color: rgb(242, 242, 242);
+            color: rgb(32, 32, 32);
             cursor: pointer;
             z-index: 1;
             padding: 3px;
-            border-radius: 10px;
+            border-radius: 30px;
             text-align: left;
         }
 
         #dropdown-content {
             display: none;
             position: relative;
-            background-color: #333;
+            background-color: rgb(242, 242, 242);
             min-width: 160px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 16px rgba(48, 48, 48, 0.2);
             z-index: 1;
             text-align: left;
         }
 
         #navbar:hover #dropdown-content {
             display: block;
-            border-radius: 10px;
+        }
+        #navbar:hover{
+            border-radius: 0px;
         }
 
         .navbar-item {
             padding: 7px;
             text-decoration: none;
             display: block;
-            color: #fff;
+            color:rgb(32, 32, 32);
         }
 
         .navbar-item:hover {
-            background-color: #555;
-            border-radius: 10px;
+            background-color: #ffffff;
         }
     </style>
 </head>
 <body>
 
     <div id="navbar">
-        <a href="#" class="navbar-item">重新調整</a>
+        <a href="#" class="navbar-item">Readjust</a>
         <div id="dropdown-content">
-            <a href="#" class="navbar-item">考試&時間</a>
-            <a href="#" class="navbar-item">科目</a>
+            <a href="#" class="navbar-item">Test & Time</a>
+            <a href="#" class="navbar-item">Object</a>
         </div>
     </div>
 
     <div id="calendar"></div>
 
     <div id="sidebar">
-        <div id="countdown">
-            <h3>Countdown</h3>
-            <!-- Add your countdown content here -->
+        <div id="countdown" >
+            <h3 style="padding-top:10px">Countdown</h3>
+            <div id="countdown-timer" style="font-family:Cambria;padding-bottom:10px"></div>
         </div>
         <div id="todo-list">
-            <h3>Today's To-Do List</h3>
-            <!-- Add your to-do list content here -->
+            <h3 style="padding-top:10px">Today's To-Do List</h3>
+            <div id="todo-items" style="padding-bottom:10px">
+            </div>
         </div>
-        <!-- Add additional content as needed -->
     </div>
+    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -110,18 +120,52 @@
                 events: [
                     {
                         title: 'Math',
-                        start: '2023-01-01T09:00:00',
-                        end: '2023-01-01T10:00:00'
+                        start: '2023-12-20T09:00:00',
+                        end: '2023-12-20T10:00:00'
                     },
                     {
                         title: 'English',
-                        start: '2023-01-01T10:00:00',
-                        end: '2023-01-01T11:00:00'
+                        start: '2023-12-20T10:00:00',
+                        end: '2023-12-20T11:00:00'
                     },
                     // Add more events as needed
                 ]
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Countdown Timer
+        var countdownDate = new Date("2023-12-31T23:59:59"); // Set your countdown date and time
+        var countdownElement = document.getElementById("countdown-timer");
+
+        var countdownInterval = setInterval(function() {
+            var now = new Date();
+            var distance = countdownDate - now;
+
+            var months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
+            var days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+
+            // Customize the countdown text based on your preference
+            var countdownText = "新年還有"+"<br>" + months + " M " + days + " D";
+            
+            countdownElement.innerHTML = countdownText;
+
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                countdownElement.innerHTML = "EXPIRED";
+            }
+        }, 1000);
+
+        // To-Do List
+        var todoList = document.getElementById("todo-items");
+        var tasks = ["Task 3", "Task 4", "Task 5"]; // Add your tasks here
+
+        tasks.forEach(function(task) {
+            var listItem = document.createElement("div");
+            listItem.textContent = task;
+            todoList.appendChild(listItem);
+        });
+    });
     </script>
 
 </body>
