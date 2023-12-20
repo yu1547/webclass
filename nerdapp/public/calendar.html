@@ -111,11 +111,13 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             $('#calendar').fullCalendar({
+                height: 590,
                 header: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay'
                 },
+                nowIndicator: true,
                 defaultView: 'agendaWeek',
                 events: [
                     {
@@ -129,7 +131,8 @@
                         end: '2023-12-20T11:00:00'
                     },
                     // Add more events as needed
-                ]
+                ],
+                navLinks:true
             });
         });
 
