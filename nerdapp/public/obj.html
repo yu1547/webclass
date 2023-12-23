@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Planner</title>
+    <style>
+        body {
+            background-color: #c1d3ec;
+            font-family:serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            padding: 10px;
+            text-align: right;
+        }
+
+        header button{
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:25px;
+            margin-right: 80px;
+            margin-top:20px;
+            background-color:#105aa7;
+            border-radius: 40px;
+            border:none;
+            text-align: center;
+            display:inline-block;
+            color:#fff;
+            font-size:large;
+        }
+
+        section {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .user-input {
+            width: 30%;
+            margin-right: 10px;
+        }
+
+        .user-input input, .user-input button {
+            margin-bottom: 10px;
+            width: 40%;
+            padding: 10px;
+        }
+
+        .study-info {
+            width: 40%;
+        }
+
+        table {
+            width: 90%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border-radius: 40px;
+        }
+
+        td {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 10px;
+            text-align: center;
+            border-radius: 40px;
+        }
+
+        tr{
+            border-radius: 40px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .user-input{
+            font-size:large;
+            background-color: #105aa7;
+            padding: 70px 35px 70px 70px;
+            margin: 100;
+            border-radius: 50px;
+        }
+
+        .user-input button{
+            font-size:large;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:10px;
+            background-color:#ffde59;
+            border-radius: 40px;
+            border:none;
+            text-align: center;
+            display:inline-block;
+            margin-left:130px;
+        }
+        .user-input label{
+            color: #fff;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        .user-input input{
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:10px;
+            border-radius: 40px;
+            border:none;
+            align-content: space-around;
+            display:inline-block;
+            margin-left: 50px;
+            background-color: #c1d3ec;
+        }
+
+        .study-info    {
+            font-size:large;
+            color: #fff;
+            background-color: #105aa7;
+            padding: 10px 10px 5px 100px;
+            border-radius: 40px;
+        }
+
+        .study-info tbody{
+            background-color:#c1d3ec;
+            color:#105aa7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button >Login</button>
+    </header>
+    <section>
+        
+        <div class="study-info" >
+            <table>
+                <thead>
+                    <tr>
+                        <td >科目名稱</td>
+                        <td >總時數</td>
+                        <td >總番茄</td>
+                    </tr>
+                </thead>
+                <tbody id="studyTableBody" >
+                    <!-- 表格內容將動態生成 -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="user-input">
+            <!-- 使用者輸入表單 -->
+            <label for="subject" >科目</label>
+            <input type="text" id="subject" style="margin-left:85px;">
+            <br><label for="time-per-page">每頁時間</label>
+            <input type="number" id="time-per-page">
+            <br>
+            <label for="pages">預估頁數</label>
+            <input type="number" id="pages">
+            <br>
+            <button onclick="addSubject()">Add</button>
+        </div>
+    </section>
+
+    <script>
+        function addSubject() {
+            // 獲取使用者輸入的值
+            var subject = document.getElementById('subject').value;
+            var pages = document.getElementById('pages').value;
+            var timePerPage = document.getElementById('time-per-page').value;
+
+            // 檢查是否有缺少輸入
+            if (!subject || !pages || !timePerPage) {
+                alert('請填寫所有項目');
+                return;
+            }
+
+            // 計算總時數和總番茄
+            var totalHours = (parseFloat(pages) * parseFloat(timePerPage)).toFixed(2);
+            var totalTomatoes = (totalHours * 2.4).toFixed(1);
+
+            // 動態生成表格行
+            var tableBody = document.getElementById('studyTableBody');
+            var newRow = tableBody.insertRow();
+            newRow.insertCell(0).innerText = subject;
+            newRow.insertCell(1).innerText = totalHours + ' 小時';
+            newRow.insertCell(2).innerText = totalTomatoes;
+
+            // 清空輸入欄位
+            document.getElementById('subject').value = '';
+            document.getElementById('pages').value = '';
+            document.getElementById('time-per-page').value = '';
+        }
+    </script>
+</body>
+</html>
