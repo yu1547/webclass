@@ -32,15 +32,29 @@ app.post('/login', async (req, res) => {
         return res.status(400).send('Invalid username or password.');
     }
     
+    // 檢查 'tests' 陣列是否有元素
+    if (user.data.tests.length > 0) {
+        // 如果有，則跳轉到 'calculate' 路由
+        res.redirect('/calculate');
+    } else {
+        // 如果沒有，則跳轉到 'dashboard.html'
+        res.sendFile(path.join(__dirname, '../public/dashboard.html'));
+    }
+
+
+
     // 在這裡進行運算
     // const result = performCalculation();
     // 這邊做計算，如果沒東西回傳空則前端會進到calculate
-    if (user.a && user.b) {
-      const result = user.a + user.b;
-      res.send({ result: result });
-    } else {
-      res.send({});
-    }
+    // if(!user.a&&!user.b){
+    //     res.sendFile(path.join(__dirname, '../public/dashboard.html'));
+    // }
+    // if (user.a && user.b) {
+    //   const result = user.a + user.b;
+    //   res.send({ result: result });
+    // } else {
+    //   res.send({});
+    // }
     // 將結果儲存到資料庫
     // user.results.push(result);
     // await user.save();
