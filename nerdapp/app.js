@@ -11,7 +11,6 @@ var bodyParser = require('body-parser');
 // var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users.js');
 var loginRouter = require('./routes/login.js'); // 新增這行
-var calculateRouter = require('./routes/calculate.js');
 // var registerRouter = require('./routes/register'); // 新增這行
 
 
@@ -38,6 +37,7 @@ app.use('/users', usersRouter);
 app.use('/login', loginRouter); // 新增這行
 app.use('/register', loginRouter); // 新增這行
 app.use('/dashboard.html', loginRouter);
+app.use('/calendar.html', loginRouter);
 app.use('/saveExam', loginRouter);
 app.use('/saveSubject/:examName', loginRouter);
 app.use('/saveLeisure', loginRouter);
