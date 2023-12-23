@@ -243,6 +243,7 @@
     
             // 為 "新增科目" 按鈕添加點擊事件處理器
             $('#studyTableBody').on('click', '.addButton', function() {
+                event.preventDefault();
                 var examName = $(this).data('exam');
                 var subjectName = prompt('請輸入科目名稱');
                 if (subjectName) {
@@ -270,6 +271,7 @@
     
             // 為 "新增考試" 按鈕添加點擊事件處理器
             $('#addSubjectButton').click(function() {
+                event.preventDefault();
                 var test = $('#test').val();
                 var date = $('#date').val();
     
@@ -294,6 +296,7 @@
     
             // 為 "新增空閒時間" 按鈕添加點擊事件處理器
             $('#addLeisureButton').click(function() {
+                event.preventDefault();
                 var day = $('#Mon').val(); // Assuming Mon is selected, change accordingly
                 var start = $('#start').val();
                 var end = $('#end').val();
@@ -318,16 +321,11 @@
             });
     
             // 為 "開始生成" 按鈕添加點擊事件處理器
-            $('#startGenerationButton').click(function() {
+            $('#generateButton').click(function() {
                 alert('開始生成...');
             });
         });
     </script>
-    
-
-    
-
-    
     
 </body>
 </html>
