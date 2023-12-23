@@ -196,20 +196,20 @@
                     <option id="min">小考(計概小考)</option>
                 </select>
             <br>
-            <button id="addSubjectButton" style="margin-top:30px">Add</button>
-
+            <button id="addSubjectButton" style="margin-top:30px">新增</button>
+            <button id="DeleteSubjectButton" style="margin-top:30px">刪除</button>
             <br>
             <hr style="color:#fff">
-            <label class="leisure-time">空閒時間(最少25分鐘)</label>
+            <label for= "leisure-time" class="leisure-time">空閒時間(最少25分鐘)</label>
             <br><br>
-                <select>
-                    <option id="Mon">星期一</option>
-                    <option id="Tue">星期二</option>
-                    <option id="Wed">星期三</option>
-                    <option id="Wed">星期四</option>
-                    <option id="Wed">星期五</option>
-                    <option id="Wed">星期六</option>
-                    <option id="Wed">星期日</option>
+                <select name="week" id="leisure-time">
+                    <option value="Mon" id="Mon">星期一</option>
+                    <option value="Tue" id="Tue">星期二</option>
+                    <option value="Wed" id="Wed">星期三</option>
+                    <option value="Thur" id="Thur">星期四</option>
+                    <option value="Fri" id="Fri">星期五</option>
+                    <option value="Sat" id="Sat">星期六</option>
+                    <option value="Sun" id="Sun">星期日</option>
                 </select>
                 <input type="time" id="start">
                 <hr style="
@@ -220,8 +220,8 @@
                 background-color:#ffffff;
                 margin-left:300px;">
                 <input type="time" id="end" style="margin-left:200px;">
-            <button id="addLeisureButton" style="margin-top:30px;margin-left:200px">Add</button>
-            
+            <button id="addLeisureButton" style="margin-top:30px;margin-left:200px">新增</button>
+            <button id="DeleteLeisureButton" style="margin-top:30px;margin-left:200px">刪除</button>
         </div>
         <button id="generateButton" onclick="startGeneration()">開始生成</button>
     </section>
