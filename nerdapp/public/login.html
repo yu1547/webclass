@@ -40,8 +40,7 @@
                 },
                 success: function(data) {
                     alert("Login successful!");
-                    window.location.href = "dashboard.html";
-                    
+                    window.location.href = data.redirect;
                 },
                 error: function() {
                     alert("Invalid username or password. Please try again.");
