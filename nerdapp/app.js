@@ -27,11 +27,12 @@ app.use('/', loginRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter); // 新增這行
 app.use('/register', loginRouter); // 新增這行
-
+app.use('/dashboard.html', loginRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
