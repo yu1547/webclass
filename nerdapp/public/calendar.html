@@ -110,6 +110,32 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            let Event=[];
+            $.ajax({
+                url: "/saveExam",
+                type: 'GET',
+                success: function(data) {
+                    eventsArray = data.map(test => ({
+                        title: test.name,
+                        start: test.date,
+                        // 其他屬性，如果有的話
+                    }));
+                    $('#calendar').fullCalendar({
+                        height: 590,
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month,agendaWeek,agendaDay'
+                        },
+                        nowIndicator: true,
+                        defaultView: 'agendaWeek',
+                        events: [
+                        {title: 'my event',
+                        start: '2023-12-24'}],
+                        navLinks:true
+                    });
+                }
+            });
             $('#calendar').fullCalendar({
                 height: 590,
                 header: {
@@ -120,21 +146,12 @@
                 nowIndicator: true,
                 defaultView: 'agendaWeek',
                 events: [
-                    {
-                        title: 'Math',
-                        start: '2023-12-20T09:00:00',
-                        end: '2023-12-20T10:00:00'
-                    },
-                    {
-                        title: 'English',
-                        start: '2023-12-20T10:00:00',
-                        end: '2023-12-20T11:00:00'
-                    },
-                    // Add more events as needed
-                ],
+                {title: 'my event',
+                start: '2023-12-24'}],
                 navLinks:true
             });
         });
+        
 
         document.addEventListener('DOMContentLoaded', function() {
         // Countdown Timer
