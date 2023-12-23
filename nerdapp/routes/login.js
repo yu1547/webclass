@@ -82,41 +82,63 @@ app.get('/dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/dashboard.html'));
 });
 
+
+
 app.post('/saveExam', async (req, res) => {
-    const user = req.session.user;
-    user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [] });
-    await user.save();
-    res.send('考試已儲存');
+    let user = await User.findOne({ username: req.session.user.username });
+    if (user) {
+        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [] });
+        await user.save();
+        res.send('考試已儲存');
+    } else {
+        res.status(404).send('用戶未找到');
+    }
 });
 
 app.post('/saveSubject/:examName', async (req, res) => {
-    const user = req.session.user;
-    const exam = user.data.tests.find(test => test.name === req.params.examName);
-    if (exam) {
-        exam.subject.push(req.body);
-        await user.save();
-        res.send('科目已儲存');
+    let user = await User.findOne({ username: req.session.user.username });
+    if (user) {
+        const exam = user.data.tests.find(test => test.name === req.params.examName);
+        if (exam) {
+            exam.subject.push(req.body);
+            await user.save();
+            res.send('科目已儲存');
+        } else {
+            res.status(404).send('考試未找到');
+        }
     } else {
-        res.status(404).send('考試未找到');
+        res.status(404).send('用戶未找到');
     }
 });
 
 app.post('/saveLeisure', async (req, res) => {
-    const user = req.session.user;
-    user.data.freeTime.push(req.body);
-    await user.save();
-    res.send('空閒時間已儲存');
+    let user = await User.findOne({ username: req.session.user.username });
+    if (user) {
+        user.data.freeTime.push(req.body);
+        await user.save();
+        res.send('空閒時間已儲存');
+    } else {
+        res.status(404).send('用戶未找到');
+    }
 });
 
 // 新增的路由
 app.get('/getExams', async (req, res) => {
-    const user = req.session.user;
-    res.send(user.data.tests);
+    let user = await User.findOne({ username: req.session.user.username });
+    if (user) {
+        res.send(user.data.tests);
+    } else {
+        res.status(404).send('用戶未找到');
+    }
 });
 
 app.get('/getFreeTime', async (req, res) => {
-    const user = req.session.user;
-    res.send(user.data.freeTime);
+    let user = await User.findOne({ username: req.session.user.username });
+    if (user) {
+        res.send(user.data.freeTime);
+    } else {
+        res.status(404).send('用戶未找到');
+    }
 });
 
 app.listen(3000, () => console.log('Server is running on port 3000...'));
