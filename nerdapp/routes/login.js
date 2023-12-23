@@ -1,11 +1,19 @@
 const express = require('express');
 var router = express.Router();
+const session = require('express-session');
+const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./users');
-const bcrypt = require('bcrypt');
 const app = express();
 const path = require('path');
+
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+}));
+
 
 // 處理 GET 請求
 app.get('/', (req, res) => {
@@ -33,6 +41,8 @@ app.post('/login', async (req, res) => {
         return res.status(400).send('Invalid username or password.');
     }
     
+    req.session.user = user; // 將使用者資訊儲存到 session 中
+
     // 檢查 'tests' 陣列是否有元素
     console.log(user.data.tests.length)
     if (user.data.tests.length > 0) {
@@ -44,38 +54,8 @@ app.post('/login', async (req, res) => {
         res.json({ redirect: '/dashboard.html' });
         
     }
-    
-    
-    
-    // 在這裡進行運算
-    // const result = performCalculation();
-    // 這邊做計算，如果沒東西回傳空則前端會進到calculate
-    // if(!user.a&&!user.b){
-        //     res.sendFile(path.join(__dirname, '../public/dashboard.html'));
-        // }
-        // if (user.a && user.b) {
-            //   const result = user.a + user.b;
-            //   res.send({ result: result });
-            // } else {
-                //   res.send({});
-                // }
-                // 將結果儲存到資料庫
-                // user.results.push(result);
-                // await user.save();
-                
-                
-                // res.send('Login successful!');
-            });
-            
-            //處理計算請求並回傳結果
-            app.post('/calculate', async (req, res) => {
-                const user = await User.findOne({ username: req.body.username }); // 你需要一種方法來獲取當前登入的用戶
-                user.a = req.body.a;
-                user.b = req.body.b;
-                await user.save();
-                const result = user.a + user.b;
-  res.send({ result: result });
 });
+            
 
 // 處理註冊請求
 app.post('/register', async (req, res) => {
