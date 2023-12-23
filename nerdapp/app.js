@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var app = express();
 var path = require('path');
 const session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -8,12 +9,12 @@ var bodyParser = require('body-parser');
 
 // 引入你的路由處理程序
 // var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var loginRouter = require('./routes/login'); // 新增這行
-var calculateRouter = require('./routes/calculate');
+var usersRouter = require('./routes/users.js');
+var loginRouter = require('./routes/login.js'); // 新增這行
+var calculateRouter = require('./routes/calculate.js');
 // var registerRouter = require('./routes/register'); // 新增這行
 
-var app = express();
+
 app.use(session({
   secret: 'your secret key',
   resave: false,
@@ -33,17 +34,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 掛載你的路由處理程序
-app.use('/', loginRouter);
 app.use('/users', usersRouter);
 app.use('/login', loginRouter); // 新增這行
 app.use('/register', loginRouter); // 新增這行
 app.use('/dashboard.html', loginRouter);
-app.use('/saveExam', calculateRouter);
-app.use('/saveSubject/:examName', calculateRouter);
-app.use('/saveLeisure', calculateRouter);
-app.use('/getExams', calculateRouter);
-app.use('/getFreeTime', calculateRouter);
+app.use('/saveExam', loginRouter);
+app.use('/saveSubject/:examName', loginRouter);
+app.use('/saveLeisure', loginRouter);
+app.use('/getExams', loginRouter);
+app.use('/getFreeTime', loginRouter);
 
+app.use('/', loginRouter);
 // 路由未找到（404）
 app.use(function(req, res, next) {
   return res.status(404).send({ message: 'Route'+req.url+' Not found.' });
