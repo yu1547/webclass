@@ -3,118 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>考試時間安排</title>
+    <title>Study Planner</title>
     <style>
-        @font-face {
-        font-family: 'Ubuntu';
-        src: url('Ubuntu-Medium.ttf'); 
-        }
         body {
-            display: flex;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Ubuntu', sans-serif;
+            background-color: #c1d3ec;
+            font-family:serif;
         }
 
-        .container {
-            display: flex;
-            width: 100%;
-        }
-
-        .form-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgb(0, 4, 43);
-            color: #ecf0f1;
-        }
-
-        
-        .exam-form {
-            width: 300px;
-            padding: 40px;
-            background-color: #563d9b89;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .exam-form label {
-            display: block;
-            margin-bottom: 8px;
-            width: 100%;
-        }
-
-        .exam-form input {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 16px;
-            border: 1px solid #95a5a6;
-            border-radius: 4px;
-            background-color: #ecf0f1;
-            color: #2c3e50;
-        }
-
-        .exam-form button {
-            width: 50%;
-            margin-top: auto;
+        header {
             padding: 10px;
-            border: none;
-            border-radius: 4px;
-            background-color: #3498db;
-            color: #ecf0f1;
-            cursor: pointer;
+            text-align: right;
         }
 
-        .exam-form button:hover {
-            background-color: #2980b9;
+        header button{
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:25px;
+            margin-right: 80px;
+            margin-top:20px;
+            background-color:#105aa7;
+            border-radius: 40px;
+            border:none;
+            text-align: center;
+            display:inline-block;
+            color:#fff;
+            font-size:large;
         }
 
-        .list-container {
-            flex: 1;
+        section {
+            display: flex;
+            justify-content: space-around;
             padding: 20px;
-            background-color: #34495e;
-            color: #ecf0f1;
         }
 
-        .exam-list {
-            list-style-type: none;
-            padding: 0;
+        .user-input {
+            width: 30%;
+            margin-right: 10px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color:#fff;
+            font-size:large;
+            background-color: #105aa7;
+            padding: 50px 35px 30px 70px;
+            margin: 100;
+            border-radius: 50px;
         }
 
-        .exam-list-item {
+        .user-input input, .user-input button {
             margin-bottom: 10px;
+            width: 40%;
+            padding: 10px;
+        }
+
+        .study-info {
+            width: 40%;
+            font-size:large;
+            color: #fff;
+            background-color: #105aa7;
+            padding: 10px 30px 10px 30px; /*上右下左*/
+            border-radius: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border-radius: 40px;
+        }
+
+        td {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 10px;
+            text-align: center;
+            border-radius: 40px;
+        }
+
+        tr{
+            border-radius: 40px;
+        }
+
+        .hidden {
+            display: none;
+        }
+        
+
+        .user-input button{
+            font-size:large;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:10px;
+            background-color:#ffde59;
+            border-radius: 40px;
+            border:none;
+            text-align: center;
+            display:inline-block;
+            margin-left:130px;
+        }
+
+        .user-input select{
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:10px;
+            border-radius: 40px;
+            border:none;
+            align-content: space-around;
+            display:inline-block;
+            margin-left: 70px;
+            background-color: #c1d3ec;
+        }
+        .user-input input{
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:10px;
+            border-radius: 40px;
+            border:none;
+            align-content: space-around;
+            display:inline-block;
+            margin-left: 50px;
+            background-color: #c1d3ec;
+        }
+
+        .study-info tbody{
+            background-color:#c1d3ec;
+            color:#105aa7;
+        }
+
+        table button {
+            font-size:large;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            padding:10px;
+            background-color:#ffde59;
+            border-radius: 40px;
+            border:none;
+            text-align: center;
+            display:inline-block;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <div class="exam-form">
-                <h2>輸入考試資訊</h2>
-                <form>
-                    <label for="examName">考試名稱：</label>
-                    <input type="text" id="examName" name="examName" required>
-
-                    <label for="examTime">考試時間：</label>
-                    <input type="datetime-local" id="examTime" name="examTime" required>
-
-                    <button type="submit">提交</button>
-                </form>
-            </div>
+    <header>
+        <button >Login</button>
+    </header>
+    <section>
+        
+        <div class="study-info" >
+            <p align="center">考試</p>
+            <table >
+                <thead>
+                    <tr>
+                        <td >考試名稱</td>
+                        <td >考試日期</td>
+                    </tr>
+                </thead>
+                <tbody id="studyTableBody" >
+                    <!-- 表格內容將動態生成 -->
+                </tbody>
+            </table>
+            <hr style="color:white">
+            <p align="center" >空閒時間</p>
+            <table>
+                <thead>
+                    <tr>
+                        <td >星期</td>
+                        <td >時間</td>
+                    </tr>
+                </thead>
+                <tbody id="timeTableBody" >
+                    <!-- 表格內容將動態生成 -->
+                </tbody>
+            </table>
         </div>
-        <div class="list-container">
-            <h2>已加入的考試</h2>
-            <ul class="exam-list">
-                <!-- 這裡是一個假設的已加入考試列表 -->
-                <li class="exam-list-item">考試1：2023-12-10 09:00</li>
-                <li class="exam-list-item">考試2：2023-12-15 14:30</li>
-            </ul>
+        
+        <div class="user-input">
+            <label for="test" >考試名稱</label>
+            <input type="text" id="test">
+            <br>
+            <label for="date">考試日期</label>
+            <input type="Date" id="date">
+            <br>
+            <label id = "important">重要性  </label>
+                <select>
+                    <option id="max">大考(學測)</option>
+                    <option id="mid">中考(期中考)</option>
+                    <option id="min">小考(計概小考)</option>
+                </select>
+            <br>
+            <button onclick="addSubject()" style="margin-top:30px">Add</button>
+            <br>
+            <hr style="color:#fff">
+            <label class="leisure-time">空閒時間(最少25分鐘)</label>
+            <br><br>
+                <select>
+                    <option id="Mon">星期一</option>
+                    <option id="Tue">星期二</option>
+                    <option id="Wed">星期三</option>
+                    <option id="Wed">星期四</option>
+                    <option id="Wed">星期五</option>
+                    <option id="Wed">星期六</option>
+                    <option id="Wed">星期日</option>
+                </select>
+                <input type="time" id="start">
+                <hr style="
+                height:70px;
+                width:.1vw;
+                border-width:0;
+                color:#ffffff;
+                background-color:#ffffff;
+                margin-left:300px;">
+                <input type="time" id="end" style="margin-left:200px;">
+            <button onclick="addLeisure()" style="margin-top:30px;margin-left:200px">Add</button>
         </div>
-    </div>
+    </section>
+
+    <script>
+        function addSubject() {
+            // 獲取使用者輸入的值
+            var test = document.getElementById('test').value;
+            var date = document.getElementById('date').value;
+
+            // 檢查是否有缺少輸入
+            if (!test || !date) {
+                alert('請填寫所有項目');
+                return;
+            }
+
+            // 動態生成表格行
+            var tableBody = document.getElementById('studyTableBody');
+            var newRow = tableBody.insertRow();
+            newRow.insertCell(0).innerText = test;
+            newRow.insertCell(1).innerText = date;
+
+            var addButtonCell = newRow.insertCell(2);
+            var addButton = document.createElement('button');
+            addButton.innerText = '新增科目';
+            addButton.onclick = function () {
+                // 在這裡加入 "新增科目" 按鈕被點擊時的動作
+                alert('您點擊了新增科目按鈕');
+            };
+            addButtonCell.appendChild(addButton);
+
+            // 清空輸入欄位
+            document.getElementById('test').value = '';
+            document.getElementById('date').value = '';
+        }
+
+        function addLeisure() {
+            // 獲取使用者輸入的值
+            var day = document.getElementById('Mon').value; // Assuming Mon is selected, change accordingly
+            var start = document.getElementById('start').value;
+            var end = document.getElementById('end').value;
+
+            // 檢查是否有缺少輸入
+            if (!day || !start || !end) {
+                alert('請填寫所有項目');
+                return;
+            }
+
+            // 動態生成表格行
+            var tableBody = document.getElementById('timeTableBody');
+            var newRow = tableBody.insertRow();
+            newRow.insertCell(0).innerText = day;
+            newRow.insertCell(1).innerText = start + ' - ' + end;
+
+            // 清空輸入欄位
+            document.getElementById('start').value = '';
+            document.getElementById('end').value = '';
+        }
+    </script>
 </body>
 </html>
