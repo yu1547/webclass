@@ -283,6 +283,24 @@ app.post('/clearAllFreeTime', async function (req, res) {
             res.status(500).send('清除空閒時間失敗。');
         });
 });
+// 路由處理器 - 獲取考試數據
+router.get('/getExams', async function(req, res, next) {
+    // 從數據庫中獲取考試數據
+    let user = await User.findOne({ username: req.session.user.username });
+    var exams = user.data.tests;
 
+    // 將考試數據返回給客戶端
+    res.json({ exams: exams });
+});
+
+// 路由處理器 - 獲取空閒時間數據
+router.get('/getFreeTime', async function(req, res, next) {
+    // 從數據庫中獲取空閒時間數據
+    let user = await User.findOne({ username: req.session.user.username });
+    var freeTime = user.data.freeTime;
+
+    // 將空閒時間數據返回給客戶端
+    res.json({ freeTime: freeTime });
+});
 app.listen(3000, () => console.log('Server is running on port 3000...'));
 module.exports = router;
