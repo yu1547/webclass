@@ -92,7 +92,7 @@ app.get('/obj.html', (req, res) => {
 app.post('/saveExam', async (req, res) => {
     let user = await User.findOne({ username: req.session.user.username });
     if (user) {
-        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [] });
+        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [] ,importance:req.body.importance});
         await user.save();
         res.send('考試已儲存');
     } else {

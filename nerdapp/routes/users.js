@@ -10,6 +10,7 @@ const subjectSchema = new mongoose.Schema({
 const testSchema = new mongoose.Schema({
     name: String, // 考試名稱
     date: Date, // 考試日期
+    importance:Number,//考試權重(2,4,6)
     subject: [subjectSchema] // 考試包含科目
     //目前進度
     //總番茄數
