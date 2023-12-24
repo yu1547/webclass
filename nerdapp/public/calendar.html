@@ -114,6 +114,20 @@
         #completed-tasks-chart div {
             display: inline-block;
         }
+
+        @media only screen and (max-width: 600px) {
+            body {
+                flex-direction: column;
+            }
+
+            #calendar {
+                width: 100%;
+            }
+
+            #sidebar {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
@@ -149,10 +163,10 @@
         </div>
 
     </div>
-    <div class="gateway">
+    <div style="position: fixed;bottom: 5px;left:5px">
         <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-            <img src="https://yu1547.github.io/webclass/images/gateway.png" alt="Art World Gateway">
-            <p>通往藝世界的大門</p>
+            <img src="https://yu1547.github.io/webclass/images/gateway.png" alt="Art World Gateway" target="_blank"
+                style="height: 70px">
         </a>
     </div>
 

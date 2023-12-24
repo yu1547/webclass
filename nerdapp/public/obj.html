@@ -85,6 +85,7 @@
         }
 
         .user-input {
+            margin-left: 1%;
             font-size: large;
             background-color: #105aa7;
             padding: 70px 35px 70px 70px;
@@ -144,6 +145,27 @@
             display: inline-block;
             margin-left: 72%;
         }
+        @media only screen and (max-width: 600px) {
+            section {
+                flex-direction: column;
+            }
+
+            .user-input {
+                box-sizing: border-box;
+                width: 100%;
+                margin-top: 3%;
+            }
+
+            .study-info {
+                box-sizing: border-box;
+                width: 100%;
+            }
+            #Save {
+                box-sizing: border-box;
+                width: 100%;
+                margin:3%;
+            }
+        }
     </style>
 </head>
 
@@ -155,6 +177,11 @@
                 target="blank"><button>?</button></a>
         </header>
     </header>
+    <div style="position: fixed;bottom: 5px;left:5px" >
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            <img src="https://yu1547.github.io/webclass/images/gateway.png" alt="Art World Gateway" target="_blank" style="height: 70px" >
+        </a>
+    </div>
     <section>
 
         <div class="study-info">
