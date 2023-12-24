@@ -85,7 +85,7 @@
 
         #navbar:hover {
             border-radius: 30px;
-            border:none;
+            border: none;
         }
 
         .navbar-item {
@@ -100,20 +100,20 @@
             background-color: #c1d3ec;
             color: #105aa7;
             border-radius: 30px;
-            border:none;
+            border: none;
         }
+
         #completed-tasks-chart {
             display: flex;
-            flex-direction: row; /* Change to row to display tasks horizontally */
+            flex-direction: row;
+            /* Change to row to display tasks horizontally */
             align-items: center;
         }
-        
-        
+
+
         #completed-tasks-chart div {
             display: inline-block;
         }
-        
-        
     </style>
 </head>
 
@@ -145,13 +145,20 @@
             <div id="completion-chart-container" style="height: 200px;">
                 <canvas id="completion-chart"></canvas>
             </div>
-            
+
         </div>
-        
+
+    </div>
+    <div class="gateway">
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+            <img src="https://yu1547.github.io/webclass/images/gateway.png" alt="Art World Gateway">
+            <p>通往藝世界的大門</p>
+        </a>
     </div>
 
-<!-- Add this script tag to include Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Add this script tag to include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -275,7 +282,7 @@
             function updateChart() {
                 var completedCount = completedTasks.children.length;
                 completionPercentage = (completedCount / tasks.length) * 100;
-        
+
                 completionChart.data.datasets[0].data = [completionPercentage, 100 - completionPercentage];
                 completionChart.update();
             }
