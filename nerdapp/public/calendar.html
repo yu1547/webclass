@@ -43,7 +43,8 @@
         }
 
         #countdown,
-        #todo-list {
+        #todo-list,
+        #task-completion {
             margin-bottom: 10px;
             text-align: center;
             background-color: #c1d3ec;
@@ -101,6 +102,18 @@
             border-radius: 30px;
             border:none;
         }
+        #completed-tasks-chart {
+            display: flex;
+            flex-direction: row; /* Change to row to display tasks horizontally */
+            align-items: center;
+        }
+        
+        
+        #completed-tasks-chart div {
+            display: inline-block;
+        }
+        
+        
     </style>
 </head>
 
@@ -127,8 +140,18 @@
             <div id="todo-items" style="padding-bottom:10px">
             </div>
         </div>
+        <div id="task-completion">
+            <h3 style="padding-top: 10px">完成任務</h3>
+            <div id="completion-chart-container" style="height: 200px;">
+                <canvas id="completion-chart"></canvas>
+            </div>
+            
+        </div>
+        
     </div>
 
+<!-- Add this script tag to include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -183,14 +206,79 @@
             }, 1000);
 
             // To-Do List
+            // To-Do List
             var todoList = document.getElementById("todo-items");
-            var tasks = ["Task 3", "Task 4", "Task 5"]; // Add your tasks here
+            var completedTasks = document.getElementById("completed-tasks-chart"); // Updated element ID
+            var tasks = ["Task 1", "Task 2", "Task 3", "Task 4", "Task 5"]; // Add your tasks here
 
             tasks.forEach(function (task) {
                 var listItem = document.createElement("div");
                 listItem.textContent = task;
+
+                // Add a click event listener to mark a task as completed
+                listItem.addEventListener('click', function () {
+                    completedTasks.appendChild(createCompletedTaskElement(task));
+                    updateChart();
+                    listItem.remove();
+                });
+
                 todoList.appendChild(listItem);
             });
+
+            var completedTasksChartContainer = document.getElementById("completion-chart-container");
+            var ctx = document.getElementById('completion-chart').getContext('2d');
+
+
+            // Bar Chart (vertical)
+            var completionPercentage = 0; // 設定初始完成百分比
+
+            var completionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Completed', 'Remaining'],
+                    datasets: [{
+                        label: 'Task Completion',
+                        data: [completionPercentage, 100 - completionPercentage], // 轉換為百分比
+                        backgroundColor: ['#36a2eb', '#ff6384'],
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                color: 'white', // 設定 x 軸文字顏色為白色
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                max: 100, // 設定 y 軸最大值為 100
+                                color: 'white', // 設定 y 軸文字顏色為白色
+                                callback: function (value) {
+                                    return value + '%'; // 加上百分比符號
+                                }
+                            }
+                        }],
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'black', // 設定 legend 文字顏色為白色
+                            }
+                        }
+                    }
+                },
+            });
+
+            // 更新圖表
+            function updateChart() {
+                var completedCount = completedTasks.children.length;
+                completionPercentage = (completedCount / tasks.length) * 100;
+        
+                completionChart.data.datasets[0].data = [completionPercentage, 100 - completionPercentage];
+                completionChart.update();
+            }
         });
     </script>
 </body>
