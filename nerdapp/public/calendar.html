@@ -5,11 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>排程表</title>
+    <link href="fullcalendar.min.css" rel="stylesheet">
+    <script src="moment.min.js"></script>
+    <script src="jquery.min.js"></script>
+    <script src="fullcalendar.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
-    <style>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>    <style>
         body {
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             margin: 20px;
@@ -110,7 +113,6 @@
             align-items: center;
         }
 
-
         #completed-tasks-chart div {
             display: inline-block;
         }
@@ -152,7 +154,7 @@
         <div id="todo-list">
             <h3 style="padding-top:10px">今天的代辦事項</h3>
             <div id="todo-items" style="padding-bottom:10px">
-            </div>
+                <!-- Checkbox added to each task -->
         </div>
         <div id="task-completion">
             <h3 style="padding-top: 10px">完成任務</h3>
@@ -176,132 +178,154 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let Event = [];
-            $.ajax({
-                url: "/saveExam",
-                type: 'GET',
-                success: function (data) {
-                    eventsArray = data.map(test => ({
-                        title: test.name,
-                        start: test.date,
-                    }));
-                    $('#calendar').fullCalendar({
-                        height: 590,
-                        header: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'month,agendaWeek,agendaDay'
-                        },
-                        nowIndicator: true,
-                        defaultView: 'agendaWeek',
-                        events: eventsArray,
-                        navLinks: true
-                    });
-                }
-            });
-
+        // FullCalendar initialization
+        $('#calendar').fullCalendar({
+            height: 590,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            nowIndicator: true,
+            defaultView: 'agendaWeek',
+            navLinks: true
         });
 
+        // Countdown Timer
+        var countdownDate = new Date("2023-12-31T23:59:59");
+        var countdownElement = document.getElementById("countdown-timer");
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // Countdown Timer
-            var countdownDate = new Date("2023-12-31T23:59:59"); // Set your countdown date and time
-            var countdownElement = document.getElementById("countdown-timer");
+        var countdownInterval = setInterval(function () {
+            var now = new Date();
+            var distance = countdownDate - now;
 
-            var countdownInterval = setInterval(function () {
-                var now = new Date();
-                var distance = countdownDate - now;
+            var months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
+            var days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
 
-                var months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
-                var days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+            var countdownText = "新年還有" + "<br>" + months + " M " + days + " D";
 
-                // Customize the countdown text based on your preference
-                var countdownText = "新年還有" + "<br>" + months + " M " + days + " D";
+            countdownElement.innerHTML = countdownText;
 
-                countdownElement.innerHTML = countdownText;
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                countdownElement.innerHTML = "EXPIRED";
+            }
+        }, 1000);
 
-                if (distance < 0) {
-                    clearInterval(countdownInterval);
-                    countdownElement.innerHTML = "EXPIRED";
+        // To-Do List
+        var todoList = document.getElementById("todo-items");
+        var completedTasks = document.getElementById("completed-tasks-chart");
+        var tasks = ["Task 1", "Task 2", "Task 3", "Task 4", "Task 5"];
+
+        tasks.forEach(function (task) {
+            var listItem = document.createElement("div");
+            
+            // Create checkbox input element
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = task;
+            checkbox.name = task;
+        
+            // Create label for the checkbox
+            var label = document.createElement("label");
+            label.htmlFor = task;
+            label.appendChild(document.createTextNode(task));
+        
+            // Append checkbox and label to listItem
+            listItem.appendChild(checkbox);
+            listItem.appendChild(label);
+        
+            // Add a change event listener to handle checkbox state changes
+            checkbox.addEventListener('change', function () {
+                if (checkbox.checked) {
+                    completedTasks.appendChild(listItem);
+                } else {
+                    todoList.appendChild(listItem);
                 }
-            }, 1000);
-
-            // To-Do List
-            // To-Do List
-            var todoList = document.getElementById("todo-items");
-            var completedTasks = document.getElementById("completed-tasks-chart"); // Updated element ID
-            var tasks = ["Task 1", "Task 2", "Task 3", "Task 4", "Task 5"]; // Add your tasks here
-
-            tasks.forEach(function (task) {
-                var listItem = document.createElement("div");
-                listItem.textContent = task;
-
-                // Add a click event listener to mark a task as completed
-                listItem.addEventListener('click', function () {
-                    completedTasks.appendChild(createCompletedTaskElement(task));
-                    updateChart();
-                    listItem.remove();
-                });
-
-                todoList.appendChild(listItem);
+                updateChart();
             });
+        
+            // Append listItem to todoList
+            todoList.appendChild(listItem);
+        });
 
-            var completedTasksChartContainer = document.getElementById("completion-chart-container");
-            var ctx = document.getElementById('completion-chart').getContext('2d');
-
-
-            // Bar Chart (vertical)
-            var completionPercentage = 0; // 設定初始完成百分比
-
-            var completionChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Completed', 'Remaining'],
-                    datasets: [{
-                        label: 'Task Completion',
-                        data: [completionPercentage, 100 - completionPercentage], // 轉換為百分比
-                        backgroundColor: ['#36a2eb', '#ff6384'],
-                    }],
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        xAxes: [{
-                            ticks: {
-                                color: 'white', // 設定 x 軸文字顏色為白色
-                            }
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true,
-                                max: 100, // 設定 y 軸最大值為 100
-                                color: 'white', // 設定 y 軸文字顏色為白色
-                                callback: function (value) {
-                                    return value + '%'; // 加上百分比符號
-                                }
-                            }
-                        }],
-                    },
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: 'black', // 設定 legend 文字顏色為白色
-                            }
-                        }
-                    }
-                },
-            });
-
-            // 更新圖表
-            function updateChart() {
-                var completedCount = completedTasks.children.length;
-                completionPercentage = (completedCount / tasks.length) * 100;
-
-                completionChart.data.datasets[0].data = [completionPercentage, 100 - completionPercentage];
-                completionChart.update();
+        todoList.addEventListener('change', function (event) {
+            if (event.target.type === 'checkbox') {
+                if (event.target.checked) {
+                    completedTasks.appendChild(event.target.parentElement);
+                } else {
+                    todoList.appendChild(event.target.parentElement);
+                }
+                updateChart();
             }
         });
-    </script>
+
+        // Chart.js
+
+        var completedTasksChartContainer = document.getElementById("completion-chart-container");
+        var ctx = document.getElementById('completion-chart').getContext('2d');
+
+        var dailyCompletion = 0;
+        var weeklyCompletion = 0;
+        var monthlyCompletion = 0;
+
+        var completionChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Daily', 'Weekly', 'Monthly'],
+                datasets: [{
+                    label: 'Task Completion',
+                    data: [dailyCompletion, weeklyCompletion, monthlyCompletion],
+                    backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                }],
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            color: 'white',
+                        }
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            max: 100,
+                            color: 'white',
+                            callback: function (value) {
+                                return value + '%';
+                            }
+                        }
+                    }],
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black',
+                        }
+                    }
+                }
+            },
+        });
+
+        function updateChart() {
+            var completedCount = completedTasks.querySelectorAll('label').length;
+            var completionPercentage = (completedCount / tasks.length) * 100;
+        
+            var weeklyTasksCount = tasks.length * 7;
+            var weeklyCompletion = (completedCount / weeklyTasksCount) * 100;
+        
+            var monthlyTasksCount = tasks.length * 30;
+            var monthlyCompletion = (completedCount / monthlyTasksCount) * 100;
+        
+            completionChart.data.datasets[0].data = [completionPercentage, weeklyCompletion, monthlyCompletion];
+            completionChart.update();
+        }
+        
+        
+    });
+</script>
+
 </body>
 
 </html>
