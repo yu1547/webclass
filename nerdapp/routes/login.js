@@ -27,7 +27,6 @@ mongoose.connect('mongodb+srv://01157120:2R9cTuCe6gEDTcEe@nerds.m6vcm0c.mongodb.
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// 將 'dashboard.html' 的路由註冊到 login.js 中
 
 // 處理登入請求
 app.post('/login', async (req, res) => {
@@ -47,7 +46,7 @@ app.post('/login', async (req, res) => {
     console.log(user.data.tests.length)
     if (user.data.tests.length > 0) {
         // 如果有，則傳送 'calculate' 路由的 URL
-        res.json({ redirect: '/calculate' });
+        res.json({ redirect: '/calendar.html' });
     } else {
         // 如果沒有，則傳送 'dashboard.html' 的 URL
         // res.json({ redirect: '../public/dashboard.html' });
@@ -80,6 +79,9 @@ app.post('/register', async (req, res) => {
 
 app.get('/dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/dashboard.html'));
+});
+app.get('/calendar.html', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/calendar.html'));
 });
 
 

@@ -1,19 +1,26 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const subjectSchema =new mongoose.Schema({
-    name: String,//科目名稱
-    clock: Number//科目所需番茄鐘
+
+const subjectSchema = new mongoose.Schema({
+    name: String, // 科目名稱
+    clock: Number // 科目所需番茄鐘
 });
 
 const testSchema = new mongoose.Schema({
-    name: String,//考試名稱
-    date: Date,//考試日期
-    subject:[subjectSchema]//考試包含科目
+    name: String, // 考試名稱
+    date: Date, // 考試日期
+    subject: [subjectSchema] // 考試包含科目
+});
+
+const freeTimeSchema = new mongoose.Schema({
+    day: String,
+    start: String,
+    end: String,
 });
 
 const calenderSchema = new mongoose.Schema({
-    name: String,//安排科目
-    date: Date//時段
+    name: String, // 安排科目
+    date: Date // 時段
 });
 
 const userSchema = new mongoose.Schema({
@@ -26,19 +33,19 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    data:{
-        tests:[testSchema],//考試們
-        freeTime:[Date],//空閒時間
-        calender:[calenderSchema]//安排閱讀的日期與時間
+    data: {
+        tests: [testSchema], // 考試們
+        freeTime: [freeTimeSchema], // 空閒時間
+        calender: [calenderSchema] // 安排閱讀的日期與時間
     }
-    // ,
-    // a: Number,
-    // b: Number
 });
 
 userSchema.pre('save', async function(next) {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    // 只有在密碼被修改時才加密
+    if (this.isModified('password')) {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+    }
     next();
 });
 
