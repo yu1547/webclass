@@ -176,42 +176,41 @@
         document.addEventListener('DOMContentLoaded', function () {
         // FullCalendar initialization
         function fetchSubjects() {
-            $.ajax({
-                url: "/getExams",
-                type: 'GET',
-                success: function (data) {
-                    // 处理科目数据，将其添加到 FullCalendar 事件中
-                    // 示例代码，你需要根据返回的数据结构进行调整
-                    data.forEach(function (subject) {
-                        var event = {
-                            title: subject.name,
-                            start: subject.date,
-                            // 其他事件属性...
-                        };
-                        $('#calendar').fullCalendar('renderEvent', event, true);
+                    $.ajax({
+                        url: "/getExams",
+                        type: 'GET',
+                        success: function (data) {
+                            data.tests.forEach(function (test) {
+                                test.subject.forEach(function (subject) {
+                                    var event = {
+                                        title: subject.name,
+                                        start: test.date, // 假設考試日期就是科目的日期
+                                        // 其他事件属性...
+                                    };
+                                    $('#calendar').fullCalendar('renderEvent', event, true);
+                                });
+                            });
+                        }
                     });
                 }
-            });
-        }
 
-        function fetchCalendar() {
-            $.ajax({
-                url: "/getFreeTime",
-                type: 'GET',
-                success: function (data) {
-                    // 处理行事历数据，将其添加到 FullCalendar 事件中
-                    // 示例代码，你需要根据返回的数据结构进行调整
-                    data.forEach(function (calendarItem) {
-                        var event = {
-                            title: calendarItem.name,
-                            start: calendarItem.date,
-                            // 其他事件属性...
-                        };
-                        $('#calendar').fullCalendar('renderEvent', event, true);
+                function fetchCalendar() {
+                    $.ajax({
+                        url: "/getFreeTime",
+                        type: 'GET',
+                        success: function (data) {
+                            data.freeTime.forEach(function (freeTime) {
+                                var event = {
+                                    title: "Free Time",
+                                    start: freeTime.start,
+                                    end: freeTime.end,
+                                    // 其他事件属性...
+                                };
+                                $('#calendar').fullCalendar('renderEvent', event, true);
+                            });
+                        }
                     });
                 }
-            });
-        }
 
         $('#calendar').fullCalendar({
             height: 590,
