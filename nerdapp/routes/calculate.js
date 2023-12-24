@@ -46,4 +46,36 @@ app.get('/getFreeTime', async (req, res) => {
     res.send(user.data.freeTime);
 });
 
+app.get('/getEvents', async (req, res) => {
+    const user = req.session.user;
+    const exams = user.data.tests.map(exam => ({
+        title: exam.name,
+        start: exam.date,
+        color: '#36a2eb' // 考試事件的顏色
+    }));
+
+    const subjects = user.data.tests.reduce((acc, exam) => {
+        exam.subject.forEach(subject => {
+            acc.push({
+                title: subject.name,
+                start: `${exam.date}T${subject.start}`,
+                end: `${exam.date}T${subject.end}`,
+                color: '#ff6384' // 科目事件的顏色
+            });
+        });
+        return acc;
+    }, []);
+
+    const freeTimes = user.data.freeTime.map(freeTime => ({
+        title: '空閒時間',
+        start: `2023-01-01T${freeTime.start}`,
+        end: `2023-01-01T${freeTime.end}`,
+        color: '#4bc0c0' // 空閒時間事件的顏色
+    }));
+
+    const events = [...exams, ...subjects, ...freeTimes];
+
+    res.json(events);
+});
+
 module.exports = router;

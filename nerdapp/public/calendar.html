@@ -165,6 +165,44 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
         // FullCalendar initialization
+        function fetchSubjects() {
+            $.ajax({
+                url: "/getExams",
+                type: 'GET',
+                success: function (data) {
+                    // 处理科目数据，将其添加到 FullCalendar 事件中
+                    // 示例代码，你需要根据返回的数据结构进行调整
+                    data.forEach(function (subject) {
+                        var event = {
+                            title: subject.name,
+                            start: subject.date,
+                            // 其他事件属性...
+                        };
+                        $('#calendar').fullCalendar('renderEvent', event, true);
+                    });
+                }
+            });
+        }
+
+        function fetchCalendar() {
+            $.ajax({
+                url: "/getFreeTime",
+                type: 'GET',
+                success: function (data) {
+                    // 处理行事历数据，将其添加到 FullCalendar 事件中
+                    // 示例代码，你需要根据返回的数据结构进行调整
+                    data.forEach(function (calendarItem) {
+                        var event = {
+                            title: calendarItem.name,
+                            start: calendarItem.date,
+                            // 其他事件属性...
+                        };
+                        $('#calendar').fullCalendar('renderEvent', event, true);
+                    });
+                }
+            });
+        }
+
         $('#calendar').fullCalendar({
             height: 590,
             header: {
@@ -173,9 +211,17 @@
                 right: 'month,agendaWeek,agendaDay'
             },
             nowIndicator: true,
-            defaultView: 'agendaWeek',
-            navLinks: true
+            defaultView: 'month',
+            navLinks: true,
+            events: '/getEvents', // Load events from the server
+            eventClick: function (calEvent, jsEvent, view) {
+                // Handle event click if needed
+            }
         });
+
+        // Fetch events when the calendar is rendered
+        fetchSubjects();
+        fetchCalendar();
 
         // Countdown Timer
         var countdownDate = new Date("2023-12-31T23:59:59");
