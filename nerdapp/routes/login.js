@@ -202,7 +202,75 @@ app.get('/getSubjects', async function(req, res) {
     res.status(200).json(test.subject);
 });
 
+app.post('/deleteTest', async function(req, res) {
+    // 從請求中獲取考試名稱
+    var testName = req.body.testName;
 
+    // 從session中獲取用戶名稱
+    var username = req.session.user.username;
+
+    // 從資料庫中獲取用戶資料
+    var user = await User.findOne({ username: username });
+
+    // 從用戶的考試中找到並刪除對應的考試
+    var testIndex = user.data.tests.findIndex(test => test.name === testName);
+    if (testIndex !== -1) {
+        user.data.tests.splice(testIndex, 1);
+    }
+
+    // 儲存用戶資料
+    user.save()
+        .then(() => {
+            res.status(200).send('考試已成功刪除！');
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('刪除考試失敗。');
+        });
+});
+
+app.post('/clearAllData', async function(req, res) {
+    // 從session中獲取用戶名稱
+    var username = req.session.user.username;
+
+    // 從資料庫中獲取用戶資料
+    var user = await User.findOne({ username: username });
+
+    // 清除所有的考試和空閒時間
+    user.data.tests = [];
+    user.data.freeTime = [];
+
+    // 儲存用戶資料
+    user.save()
+        .then(() => {
+            res.status(200).send('所有資料已成功清除！');
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('清除資料失敗。');
+        });
+});
+
+app.post('/clearAllFreeTime', async function(req, res) {
+    // 從session中獲取用戶名稱
+    var username = req.session.user.username;
+
+    // 從資料庫中獲取用戶資料
+    var user = await User.findOne({ username: username });
+
+    // 清除所有的空閒時間
+    user.data.freeTime = [];
+
+    // 儲存用戶資料
+    user.save()
+        .then(() => {
+            res.status(200).send('所有空閒時間已成功清除！');
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('清除空閒時間失敗。');
+        });
+});
 
 app.listen(3000, () => console.log('Server is running on port 3000...'));
 module.exports = router;
