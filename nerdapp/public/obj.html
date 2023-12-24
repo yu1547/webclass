@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,7 @@
     <style>
         body {
             background-color: #c1d3ec;
-            font-family:serif;
+            font-family: serif;
             margin: 0;
             padding: 0;
         }
@@ -24,18 +25,18 @@
             margin-top: 1%;
         }
 
-        header button{
+        header button {
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            padding:25px;
+            padding: 25px;
             margin-left: 5%;
-            background-color:#105aa7;
-            border:none;
+            background-color: #105aa7;
+            border: none;
             text-align: center;
-            display:inline-block;
-            color:#fff;
-            font-size:large;
-            padding:5px 10px 5px 10px;
-            border-radius:100px;
+            display: inline-block;
+            color: #fff;
+            font-size: large;
+            padding: 5px 10px 5px 10px;
+            border-radius: 100px;
         }
 
         section {
@@ -49,7 +50,8 @@
             margin-right: 10px;
         }
 
-        .user-input input, .user-input button {
+        .user-input input,
+        .user-input button {
             margin-bottom: 10px;
             width: 40%;
             padding: 10px;
@@ -73,7 +75,7 @@
             border-radius: 40px;
         }
 
-        tr{
+        tr {
             border-radius: 40px;
             height:50px;
         }
@@ -82,92 +84,97 @@
             display: none;
         }
 
-        .user-input{
-            font-size:large;
+        .user-input {
+            font-size: large;
             background-color: #105aa7;
             padding: 70px 35px 70px 70px;
             margin: 100;
             border-radius: 50px;
         }
 
-        .user-input button{
-            font-size:large;
+        .user-input button {
+            font-size: large;
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            padding:10px;
-            background-color:#ffde59;
+            padding: 10px;
+            background-color: #ffde59;
             border-radius: 40px;
-            border:none;
+            border: none;
             text-align: center;
-            display:inline-block;
-            margin-left:130px;
+            display: inline-block;
+            margin-left: 130px;
         }
-        .user-input label{
+
+        .user-input label {
             color: #fff;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
-        .user-input input{
+
+        .user-input input {
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            padding:10px;
+            padding: 10px;
             border-radius: 40px;
-            border:none;
+            border: none;
             align-content: space-around;
-            display:inline-block;
+            display: inline-block;
             margin-left: 50px;
             background-color: #c1d3ec;
         }
 
-        .study-info    {
-            font-size:large;
+        .study-info {
+            font-size: large;
             color: #fff;
             background-color: #105aa7;
             padding: 10px 10px 5px 100px;
             border-radius: 40px;
         }
 
-        .study-info tbody{
-            background-color:#c1d3ec;
-            color:#105aa7;
+        .study-info tbody {
+            background-color: #c1d3ec;
+            color: #105aa7;
         }
-        button{
-            font-size:larger;
+
+        button {
+            font-size: larger;
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            padding:20px;
-            background-color:#ffde59;
+            padding: 20px;
+            background-color: #ffde59;
             border-radius: 40px;
-            border:none;
+            border: none;
             text-align: center;
-            display:inline-block;
-            margin-left:72%;
+            display: inline-block;
+            margin-left: 72%;
         }
     </style>
 </head>
+
 <body>
     <header>
         <header>
             <h2>初始介面</h2>
-            <a href="https://zh.wikipedia.org/zh-tw/%E7%95%AA%E8%8C%84%E5%B7%A5%E4%BD%9C%E6%B3%95" target="blank"><button>?</button></a>
+            <a href="https://zh.wikipedia.org/zh-tw/%E7%95%AA%E8%8C%84%E5%B7%A5%E4%BD%9C%E6%B3%95"
+                target="blank"><button>?</button></a>
         </header>
     </header>
     <section>
-        
-        <div class="study-info" >
+
+        <div class="study-info">
             <table>
                 <thead>
                     <tr>
-                        <td >科目名稱</td>
-                        <td >總時數</td>
-                        <td >總番茄</td>
+                        <td>科目名稱</td>
+                        <td>總時數</td>
+                        <td>總番茄</td>
                     </tr>
                 </thead>
-                <tbody id="studyTableBody" >
+                <tbody id="studyTableBody">
                     <!-- 表格內容將動態生成 -->
                 </tbody>
             </table>
         </div>
-        
+
         <div class="user-input">
             <!-- 使用者輸入表單 -->
-            <label for="subject" >科目</label>
+            <label for="subject">科目</label>
             <input type="text" id="subject" style="margin-left:85px;">
             <br><label for="time-per-page">每頁時間</label>
             <input type="number" id="time-per-page" min="0">
@@ -177,15 +184,50 @@
             <br>
             <button onclick="addSubject()">Add</button>
         </div>
-    </section>
-    <button onclick="Save()">儲存並繼續</button>
+        <input type="hidden" id="testName">
 
+    </section>
+    <button id="Save">儲存並繼續</button>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        $(document).ready(function () {
+            // 獲取考試名稱
+            var testName = $('#testName').val();
+
+            // 發送GET請求到伺服器，獲取該科目的資訊
+            $.ajax({
+                url: '/getSubjects',
+                type: 'GET',
+                data: {
+                    testName: testName
+                },
+                success: function (data) {
+                    // 將獲取到的科目資訊顯示在表格中
+                    data.forEach(function (subject) {
+                        var newRow = $('<tr></tr>');
+                        newRow.append('<td>' + subject.name + '</td>');
+                        newRow.append('<td>' + (subject.clock / 2.4).toFixed(2) + ' 小時</td>');
+                        newRow.append('<td>' + subject.clock + '</td>');
+                        $('#studyTableBody').append(newRow);
+                    });
+                },
+                error: function () {
+                    alert('獲取科目資訊失敗，請稍後再試。');
+                }
+            });
+        });
+
+
+        $('#Save').click(function () {
+            window.location.href = 'dashboard.html';
+        });
+        $('#testName').val(sessionStorage.getItem('currentTest'));
+
         function addSubject() {
             // 獲取使用者輸入的值
-            var subject = document.getElementById('subject').value;
-            var pages = document.getElementById('pages').value;
-            var timePerPage = document.getElementById('time-per-page').value;
+            var subject = $('#subject').val();
+            var pages = $('#pages').val();
+            var timePerPage = $('#time-per-page').val();
 
             // 檢查是否有缺少輸入
             if (!subject || !pages || !timePerPage) {
@@ -195,20 +237,39 @@
 
             // 計算總時數和總番茄
             var totalHours = (parseFloat(pages) * parseFloat(timePerPage)).toFixed(2);
-            var totalTomatoes = (totalHours * 2.4).toFixed(1);
+            var totalTomatoes = Math.ceil(totalHours * 60/25);
 
             // 動態生成表格行
-            var tableBody = document.getElementById('studyTableBody');
-            var newRow = tableBody.insertRow();
-            newRow.insertCell(0).innerText = subject;
-            newRow.insertCell(1).innerText = totalHours + ' 小時';
-            newRow.insertCell(2).innerText = totalTomatoes;
+            var newRow = $('<tr></tr>');
+            newRow.append('<td>' + subject + '</td>');
+            newRow.append('<td>' + totalHours + ' 小時</td>');
+            newRow.append('<td>' + totalTomatoes + '</td>');
+            $('#studyTableBody').append(newRow);
 
             // 清空輸入欄位
-            document.getElementById('subject').value = '';
-            document.getElementById('pages').value = '';
-            document.getElementById('time-per-page').value = '';
+            $('#subject').val('');
+            $('#pages').val('');
+            $('#time-per-page').val('');
+
+            // 發送POST請求到伺服器
+            $.ajax({
+                url: '/addSubject',
+                type: 'POST',
+                data: {
+                    testName: $('#testName').val(),
+                    name: subject,
+                    clock: totalTomatoes
+                },
+                success: function (data) {
+                    alert('科目已成功新增！');
+                },
+                error: function () {
+                    alert('新增科目失敗，請稍後再試。');
+                }
+            });
         }
+
     </script>
 </body>
+
 </html>

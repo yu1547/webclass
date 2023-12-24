@@ -38,21 +38,23 @@ app.use('/login', loginRouter); // 新增這行
 app.use('/register', loginRouter); // 新增這行
 app.use('/dashboard.html', loginRouter);
 app.use('/calendar.html', loginRouter);
+app.use('/obj.html', loginRouter);
 app.use('/saveExam', loginRouter);
 app.use('/saveSubject/:examName', loginRouter);
 app.use('/saveLeisure', loginRouter);
 app.use('/getExams', loginRouter);
 app.use('/getFreeTime', loginRouter);
-
+app.use('/addSubject', loginRouter);
+app.use('//getSubjects', loginRouter);
 app.use('/', loginRouter);
 // 路由未找到（404）
-app.use(function(req, res, next) {
-  return res.status(404).send({ message: 'Route'+req.url+' Not found.' });
+app.use(function (req, res, next) {
+  return res.status(404).send({ message: 'Route' + req.url + ' Not found.' });
 });
 
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

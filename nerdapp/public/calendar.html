@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,20 +14,24 @@
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             margin: 20px;
             display: flex;
-            justify-content: space-between; /* Added to distribute space between the calendar and sidebar */
+            justify-content: space-between;
+            /* Added to distribute space between the calendar and sidebar */
         }
+
         header h2 {
             text-align: center;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
 
         #calendar {
-            width: 65%; /* Adjusted width for the calendar */
-            margin-top: 50px; /* Added margin to create space above the calendar */
+            width: 65%;
+            /* Adjusted width for the calendar */
+            margin-top: 50px;
+            /* Added margin to create space above the calendar */
             background-color: #c1d3ec;
-            padding:10px;
+            padding: 10px;
             border-radius: 10px;
-            }
+        }
 
         #sidebar {
             width: 30%;
@@ -40,13 +45,13 @@
         #countdown,
         #todo-list {
             margin-bottom: 10px;
-            text-align:center;
+            text-align: center;
             background-color: #c1d3ec;
             border-radius: 25px;
-        } 
+        }
 
         #countdown h3,
-        #todo-list h3{
+        #todo-list h3 {
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
 
@@ -60,7 +65,7 @@
             padding: 3px;
             border-radius: 30px;
             text-align: left;
-            margin-left:2%;
+            margin-left: 2%;
         }
 
         #dropdown-content {
@@ -76,7 +81,8 @@
         #navbar:hover #dropdown-content {
             display: block;
         }
-        #navbar:hover{
+
+        #navbar:hover {
             border-radius: 0px;
         }
 
@@ -85,29 +91,31 @@
             padding: 7px;
             text-decoration: none;
             display: block;
-            color:rgb(255, 255, 255);
+            color: rgb(255, 255, 255);
         }
 
         .navbar-item:hover {
             background-color: #c1d3ec;
-            color:#105aa7;
+            color: #105aa7;
         }
     </style>
 </head>
+
 <body>
-    <header><h2 style="position: fixed;left:50%;top:5px;">月曆介面</h>
+    <header>
+        <h2 style="position: fixed;left:50%;top:5px;">月曆介面</h>
     </header>
     <div id="navbar">
-        <a href="#" class="navbar-item">重新調整</a>
-        <div id="dropdown-content">
+        <a href="dashboard.html" class="navbar-item">重新調整</a>
+        <!-- <div id="dropdown-content">
             <a href="#" class="navbar-item">考試 & 時間</a>
-        </div>
+        </div> -->
     </div>
 
     <div id="calendar"></div>
 
     <div id="sidebar">
-        <div id="countdown" >
+        <div id="countdown">
             <h3 style="padding-top:10px">倒數計時</h3>
             <div id="countdown-timer" style="font-family:Cambria;padding-bottom:10px"></div>
         </div>
@@ -117,15 +125,15 @@
             </div>
         </div>
     </div>
-    
+
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let Event=[];
+        document.addEventListener('DOMContentLoaded', function () {
+            let Event = [];
             $.ajax({
                 url: "/saveExam",
                 type: 'GET',
-                success: function(data) {
+                success: function (data) {
                     eventsArray = data.map(test => ({
                         title: test.name,
                         start: test.date,
@@ -140,47 +148,48 @@
                         nowIndicator: true,
                         defaultView: 'agendaWeek',
                         events: eventsArray,
-                        navLinks:true
+                        navLinks: true
                     });
                 }
             });
-            
+
         });
-        
 
-        document.addEventListener('DOMContentLoaded', function() {
-        // Countdown Timer
-        var countdownDate = new Date("2023-12-31T23:59:59"); // Set your countdown date and time
-        var countdownElement = document.getElementById("countdown-timer");
 
-        var countdownInterval = setInterval(function() {
-            var now = new Date();
-            var distance = countdownDate - now;
+        document.addEventListener('DOMContentLoaded', function () {
+            // Countdown Timer
+            var countdownDate = new Date("2023-12-31T23:59:59"); // Set your countdown date and time
+            var countdownElement = document.getElementById("countdown-timer");
 
-            var months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
-            var days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+            var countdownInterval = setInterval(function () {
+                var now = new Date();
+                var distance = countdownDate - now;
 
-            // Customize the countdown text based on your preference
-            var countdownText = "新年還有"+"<br>" + months + " M " + days + " D";
-            
-            countdownElement.innerHTML = countdownText;
+                var months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
+                var days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
 
-            if (distance < 0) {
-                clearInterval(countdownInterval);
-                countdownElement.innerHTML = "EXPIRED";
-            }
-        }, 1000);
+                // Customize the countdown text based on your preference
+                var countdownText = "新年還有" + "<br>" + months + " M " + days + " D";
 
-        // To-Do List
-        var todoList = document.getElementById("todo-items");
-        var tasks = ["Task 3", "Task 4", "Task 5"]; // Add your tasks here
+                countdownElement.innerHTML = countdownText;
 
-        tasks.forEach(function(task) {
-            var listItem = document.createElement("div");
-            listItem.textContent = task;
-            todoList.appendChild(listItem);
+                if (distance < 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.innerHTML = "EXPIRED";
+                }
+            }, 1000);
+
+            // To-Do List
+            var todoList = document.getElementById("todo-items");
+            var tasks = ["Task 3", "Task 4", "Task 5"]; // Add your tasks here
+
+            tasks.forEach(function (task) {
+                var listItem = document.createElement("div");
+                listItem.textContent = task;
+                todoList.appendChild(listItem);
+            });
         });
-    });
     </script>
 </body>
+
 </html>
