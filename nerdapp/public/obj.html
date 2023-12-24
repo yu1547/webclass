@@ -236,8 +236,9 @@
             }
 
             // 計算總時數和總番茄
-            var totalHours = (parseFloat(pages) * parseFloat(timePerPage)).toFixed(2);
-            var totalTomatoes = Math.ceil(totalHours * 60/25);
+            var totalMin=parseFloat(pages) * parseFloat(timePerPage);
+            var totalHours = (totalMin/60).toFixed(2);
+            var totalTomatoes = Math.ceil(totalMin /25);
 
             // 動態生成表格行
             var newRow = $('<tr></tr>');

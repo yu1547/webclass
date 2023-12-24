@@ -4,12 +4,15 @@ const bcrypt = require('bcrypt');
 const subjectSchema = new mongoose.Schema({
     name: String, // 科目名稱
     clock: Number // 科目所需番茄鐘
+    //目前進度
 });
 
 const testSchema = new mongoose.Schema({
     name: String, // 考試名稱
     date: Date, // 考試日期
     subject: [subjectSchema] // 考試包含科目
+    //目前進度
+    //總番茄數
 });
 
 const freeTimeSchema = new mongoose.Schema({
@@ -20,7 +23,8 @@ const freeTimeSchema = new mongoose.Schema({
 
 const calenderSchema = new mongoose.Schema({
     name: String, // 安排科目
-    date: Date // 時段
+    date: Date, // 時段
+    finish :Boolean //有沒有完成
 });
 
 const userSchema = new mongoose.Schema({
