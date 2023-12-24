@@ -12,23 +12,23 @@
             padding: 0;
         }
 
-        header {
-            padding: 10px;
-            text-align: right;
+        header h2 {
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
 
         header button{
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             padding:25px;
-            margin-right: 80px;
-            margin-top:20px;
+            margin-left: 5%;
             background-color:#105aa7;
-            border-radius: 40px;
             border:none;
             text-align: center;
             display:inline-block;
             color:#fff;
             font-size:large;
+            padding:5px 10px 5px 10px;
+            border-radius:100px;
         }
 
         section {
@@ -135,7 +135,10 @@
 </head>
 <body>
     <header>
-        <button >Login</button>
+        <header>
+            <h2>初始介面</h2>
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="blank"><button>?</button></a>
+        </header>
     </header>
     <section>
         
@@ -159,10 +162,10 @@
             <label for="subject" >科目</label>
             <input type="text" id="subject" style="margin-left:85px;">
             <br><label for="time-per-page">每頁時間</label>
-            <input type="number" id="time-per-page">
+            <input type="number" id="time-per-page" min="0">
             <br>
             <label for="pages">預估頁數</label>
-            <input type="number" id="pages">
+            <input type="number" id="pages" min="0">
             <br>
             <button onclick="addSubject()">Add</button>
         </div>

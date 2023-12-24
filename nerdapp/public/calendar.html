@@ -15,18 +15,22 @@
             display: flex;
             justify-content: space-between; /* Added to distribute space between the calendar and sidebar */
         }
+        header h2 {
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
 
         #calendar {
             width: 65%; /* Adjusted width for the calendar */
             margin-top: 50px; /* Added margin to create space above the calendar */
-            background-color: rgb(242, 242, 242);
+            background-color: #c1d3ec;
             padding:10px;
             border-radius: 10px;
             }
 
         #sidebar {
             width: 30%;
-            background-color: rgb(242, 242, 242);
+            background-color: #105aa7;
             padding: 10px;
             box-sizing: border-box;
             margin-top: 50px;
@@ -37,27 +41,32 @@
         #todo-list {
             margin-bottom: 10px;
             text-align:center;
-            background-color: #ffffff;
+            background-color: #c1d3ec;
             border-radius: 25px;
+        } 
+
+        #countdown h3,
+        #todo-list h3{
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
 
         #navbar {
             position: fixed;
             top: 12px;
-            left: px;
-            background-color: rgb(242, 242, 242);
+            background-color: #105aa7;
             color: rgb(32, 32, 32);
             cursor: pointer;
             z-index: 1;
             padding: 3px;
             border-radius: 30px;
             text-align: left;
+            margin-left:2%;
         }
 
         #dropdown-content {
             display: none;
             position: relative;
-            background-color: rgb(242, 242, 242);
+            background-color: #105aa7;
             min-width: 160px;
             box-shadow: 0 8px 16px rgba(48, 48, 48, 0.2);
             z-index: 1;
@@ -72,24 +81,26 @@
         }
 
         .navbar-item {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             padding: 7px;
             text-decoration: none;
             display: block;
-            color:rgb(32, 32, 32);
+            color:rgb(255, 255, 255);
         }
 
         .navbar-item:hover {
-            background-color: #ffffff;
+            background-color: #c1d3ec;
+            color:#105aa7;
         }
     </style>
 </head>
 <body>
-
+    <header><h2 style="position: fixed;left:50%;top:5px;">月曆介面</h>
+    </header>
     <div id="navbar">
-        <a href="#" class="navbar-item">Readjust</a>
+        <a href="#" class="navbar-item">重新調整</a>
         <div id="dropdown-content">
-            <a href="#" class="navbar-item">Test & Time</a>
-            <a href="#" class="navbar-item">Object</a>
+            <a href="#" class="navbar-item">考試 & 時間</a>
         </div>
     </div>
 
@@ -97,11 +108,11 @@
 
     <div id="sidebar">
         <div id="countdown" >
-            <h3 style="padding-top:10px">Countdown</h3>
+            <h3 style="padding-top:10px">倒數計時</h3>
             <div id="countdown-timer" style="font-family:Cambria;padding-bottom:10px"></div>
         </div>
         <div id="todo-list">
-            <h3 style="padding-top:10px">Today's To-Do List</h3>
+            <h3 style="padding-top:10px">今天的代辦事項</h3>
             <div id="todo-items" style="padding-bottom:10px">
             </div>
         </div>
@@ -118,7 +129,6 @@
                     eventsArray = data.map(test => ({
                         title: test.name,
                         start: test.date,
-                        // 其他屬性，如果有的話
                     }));
                     $('#calendar').fullCalendar({
                         height: 590,
@@ -129,27 +139,12 @@
                         },
                         nowIndicator: true,
                         defaultView: 'agendaWeek',
-                        events: [
-                        {title: 'my event',
-                        start: '2023-12-24'}],
+                        events: eventsArray,
                         navLinks:true
                     });
                 }
             });
-            $('#calendar').fullCalendar({
-                height: 590,
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                nowIndicator: true,
-                defaultView: 'agendaWeek',
-                events: [
-                {title: 'my event',
-                start: '2023-12-24'}],
-                navLinks:true
-            });
+            
         });
         
 
@@ -187,6 +182,5 @@
         });
     });
     </script>
-
 </body>
 </html>
