@@ -104,14 +104,15 @@ app.get('/obj.html',  checkLoginMiddleware,(req, res) => {
 app.post('/saveExam', async (req, res) => {
     let user = await User.findOne({ username: req.session.user.username });
     if (user) {
-        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [], importance: req.body.importance });
+        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [], importance: req.body.importance  ,finish:0,//目前進度
+        total:0});
         await user.save();
         res.send('考試已儲存');
     } else {
         res.status(404).send('用戶未找到');
     }
 });
-
+//不用的
 app.post('/saveSubject/:examName', async (req, res) => {
     let user = await User.findOne({ username: req.session.user.username });
     if (user) {
@@ -174,7 +175,7 @@ app.post('/addSubject', async function (req, res) {
     var test = user.data.tests.find(test => test.name === testName);
 
     // 創建一個新的subject對象
-    var newSubject = { name: subjectName, clock: subjectClock };
+    var newSubject = { name: subjectName, clock: subjectClock,finish:0 };
 
     // 將新的subject對象添加到對應的test中
     test.subject.push(newSubject);

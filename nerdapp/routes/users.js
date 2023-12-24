@@ -3,17 +3,17 @@ const bcrypt = require('bcrypt');
 
 const subjectSchema = new mongoose.Schema({
     name: String, // 科目名稱
-    clock: Number // 科目所需番茄鐘
-    //目前進度
+    clock: Number, // 科目所需番茄鐘
+    finish:Number//目前進度
 });
 
 const testSchema = new mongoose.Schema({
     name: String, // 考試名稱
     date: Date, // 考試日期
     importance:Number,//考試權重(2,4,6)
-    subject: [subjectSchema] // 考試包含科目
-    //目前進度
-    //總番茄數
+    subject: [subjectSchema], // 考試包含科目
+    finish:Number,//目前進度
+    total:Number//總番茄數
 });
 
 const freeTimeSchema = new mongoose.Schema({

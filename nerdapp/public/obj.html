@@ -52,6 +52,7 @@
 
         .user-input input,
         .user-input button {
+            
             margin-bottom: 10px;
             width: 40%;
             padding: 10px;
@@ -202,12 +203,12 @@
         <div class="user-input">
             <!-- 使用者輸入表單 -->
             <label for="subject">科目</label>
-            <input type="text" id="subject" style="margin-left:85px;">
-            <br><label for="time-per-page">每頁時間</label>
-            <input type="number" id="time-per-page" min="0">
+            <input type="text" id="subject" style="margin-left:100px;">
+            <br><label for="time-per-page">每頁時間(分鐘)</label>
+            <input type="number" id="time-per-page" min="1" value="7"style="margin-left:15px;">
             <br>
             <label for="pages">預估頁數</label>
-            <input type="number" id="pages" min="0">
+            <input type="number" id="pages" min="0"style="margin-left:60px;">
             <br>
             <button onclick="addSubject()">Add</button>
         </div>

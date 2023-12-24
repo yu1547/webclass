@@ -104,7 +104,7 @@
         }
 
         .user-input select {
-            
+
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             padding: 10px;
             border-radius: 40px;
@@ -144,7 +144,7 @@
 
         #generateButton {
             box-sizing: border-box;
-            float:right;
+            float: right;
             font-size: large;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             padding: 10px;
@@ -169,6 +169,7 @@
             vertical-align: middle;
             display: inline-block;
         }
+
         @media only screen and (max-width: 1000px) {
             section {
                 flex-direction: column;
@@ -182,13 +183,11 @@
             .study-info {
                 width: 100%;
             }
+
             #generateButton {
-            margin-top: 3%;
+                margin-top: 3%;
             }
         }
-        
-
-
     </style>
 </head>
 
@@ -199,11 +198,13 @@
     <header>
         <h2>歡迎加入Nerd養成計畫 <br>
             預祝您考試順利發大財</h2>
-        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="blank" style="position: absolute;top: 30px;left:30px"><button>?</button></a>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="blank"
+            style="position: absolute;top: 30px;left:30px"><button>?</button></a>
     </header>
-    <div style="position: fixed;bottom: 5px;left:5px" >
+    <div style="position: fixed;bottom: 5px;left:5px">
         <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-            <img src="https://yu1547.github.io/webclass/images/gateway.png" alt="Art World Gateway" target="_blank" style="height: 70px" >
+            <img src="https://yu1547.github.io/webclass/images/gateway.png" alt="Art World Gateway" target="_blank"
+                style="height: 70px">
         </a>
     </div>
     <section>
@@ -265,7 +266,7 @@
                 <option value="Sat" id="Sat">星期六</option>
                 <option value="Sun" id="Sun">星期日</option>
             </select>
-            <input type="time" id="start"style="float:right;
+            <input type="time" id="start" style="float:right;
             margin-right: 20%">
             <hr style="
                 height:70px;
@@ -373,7 +374,10 @@
             $('#addSubjectButton').click(function () {
                 event.preventDefault();
                 var test = $('#test').val();
-                var date = $('#date').val();
+                var date =new Date($('#date').val()); 
+                var yearMonthDay = date.toISOString().split('T')[0];
+                console.log(yearMonthDay);  // 輸出 "2024-01-24"
+
                 var importance = $('#importance').val(); // 獲取選中的選項的權重
 
                 if (!test || !date || !importance) {
@@ -384,10 +388,10 @@
                 $.ajax({
                     url: "/saveExam",
                     type: 'POST',
-                    data: { name: test, date: date, importance: importance }, // 傳遞權重到伺服器端
+                    data: { name: test, date: yearMonthDay, importance: importance }, // 傳遞權重到伺服器端
                     success: function (data) {
                         alert(data);
-                        $('#studyTableBody').append('<tr><td>' + test + '</td><td>' + date + '</td><td><button class="addButton" data-exam="' + test + '"onclick="goToAddSubjectPage(\'' + test + '\')">新增科目</button></td><td><button class="deleteButton" data-exam="' + test + '"onclick="deleteTest(\'' + test + '\')"">刪除考試</button></td></tr>');
+                        $('#studyTableBody').append('<tr><td>' + test + '</td><td>' + yearMonthDay + '</td><td><button class="addButton" data-exam="' + test + '"onclick="goToAddSubjectPage(\'' + test + '\')">新增科目</button></td><td><button class="deleteButton" data-exam="' + test + '"onclick="deleteTest(\'' + test + '\')"">刪除考試</button></td></tr>');
                     }
                 });
 
@@ -401,7 +405,7 @@
             // 為 "新增空閒時間" 按鈕添加點擊事件處理器
             $('#addLeisureButton').click(function () {
                 event.preventDefault();
-                var day = $('#Mon').val(); // Assuming Mon is selected, change accordingly
+                var day = $('#leisure-time').val(); // Assuming Mon is selected, change accordingly
                 var start = $('#start').val();
                 var end = $('#end').val();
 
