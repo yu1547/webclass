@@ -176,41 +176,39 @@
         document.addEventListener('DOMContentLoaded', function () {
         // FullCalendar initialization
         function fetchSubjects() {
-                    $.ajax({
-                        url: "/getExams",
-                        type: 'GET',
-                        success: function (data) {
-                            data.tests.forEach(function (test) {
-                                test.subject.forEach(function (subject) {
-                                    var event = {
-                                        title: subject.name,
-                                        start: test.date, // 假設考試日期就是科目的日期
-                                        // 其他事件属性...
-                                    };
-                                    $('#calendar').fullCalendar('renderEvent', event, true);
-                                });
-                            });
-                        }
-                    });
+            $.ajax({
+                url: "/getExams",
+                type: 'GET',
+                success: function (data) {
+                    renderEvents(data.tests);
                 }
+            });
+        }
 
-                function fetchCalendar() {
-                    $.ajax({
-                        url: "/getFreeTime",
-                        type: 'GET',
-                        success: function (data) {
-                            data.freeTime.forEach(function (freeTime) {
-                                var event = {
-                                    title: "Free Time",
-                                    start: freeTime.start,
-                                    end: freeTime.end,
-                                    // 其他事件属性...
-                                };
-                                $('#calendar').fullCalendar('renderEvent', event, true);
-                            });
-                        }
-                    });
+        function fetchCalendar() {
+            $.ajax({
+                url: "/getFreeTime",
+                type: 'GET',
+                success: function (data) {
+                    renderFreeTime(data.freeTime);
                 }
+            });
+        }
+        function saveDataToServer() {
+            $.ajax({
+                url: "/saveData",  // Update this URL to match your server endpoint
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ data: yourDataObject }),  // Replace yourDataObject with the actual data
+                success: function (response) {
+                    console.log('Data saved successfully:', response);
+                },
+                error: function (error) {
+                    console.error('Error saving data:', error);
+                }
+            });
+        }
+            
 
         $('#calendar').fullCalendar({
             height: 590,
@@ -231,6 +229,10 @@
         // Fetch events when the calendar is rendered
         fetchSubjects();
         fetchCalendar();
+        
+        document.getElementById('saveButton').addEventListener('click', function () {
+            saveDataToServer();
+        });
 
         // Countdown Timer
         var countdownDate = new Date("2023-12-31T23:59:59");
@@ -336,7 +338,6 @@
                             callback: function (value) {
                                 return value + '%';
                             },
-                            max: 100,  // 设置 Y 轴的最大值为 100
                         }
                     }],
                 },
