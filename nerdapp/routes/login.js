@@ -8,6 +8,18 @@ const User = require('./users');
 const app = express();
 const path = require('path');
 
+const checkLoginMiddleware = (req, res, next) => {
+    // 假設你有一個表示登入狀態的變數，例如 isLoggedIn
+    const isLoggedIn = req.session.isLoggedIn; // 使用 session 保存登入狀態
+    console.log("islogin", isLoggedIn);
+    // 如果使用者未登入，重定向到登入頁面
+    if (!isLoggedIn) {
+        return res.redirect('/');
+    }
+
+    // 如果使用者已登入，繼續執行下一個中介軟體或路由處理
+    next();
+};
 app.use(session({
     secret: 'your_secret_key',
     resave: false,
@@ -41,7 +53,7 @@ app.post('/login', async (req, res) => {
     }
 
     req.session.user = user; // 將使用者資訊儲存到 session 中
-
+    req.session.isLoggedIn = true;
     // 檢查 'tests' 陣列是否有元素
     console.log(user.data.tests.length)
     if (user.data.tests.length > 0) {
@@ -77,13 +89,13 @@ app.post('/register', async (req, res) => {
     res.send(user);
 });
 
-app.get('/dashboard.html', (req, res) => {
+app.get('/dashboard.html',  checkLoginMiddleware,(req, res) => {
     res.sendFile(path.join(__dirname, '../public/dashboard.html'));
 });
-app.get('/calendar.html', (req, res) => {
+app.get('/calendar.html',  checkLoginMiddleware,(req, res) => {
     res.sendFile(path.join(__dirname, '../public/calendar.html'));
 });
-app.get('/obj.html', (req, res) => {
+app.get('/obj.html',  checkLoginMiddleware,(req, res) => {
     res.sendFile(path.join(__dirname, '../public/obj.html'));
 });
 
@@ -92,7 +104,7 @@ app.get('/obj.html', (req, res) => {
 app.post('/saveExam', async (req, res) => {
     let user = await User.findOne({ username: req.session.user.username });
     if (user) {
-        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [] ,importance:req.body.importance});
+        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [], importance: req.body.importance });
         await user.save();
         res.send('考試已儲存');
     } else {
@@ -179,7 +191,7 @@ app.post('/addSubject', async function (req, res) {
 
 });
 
-app.get('/getSubjects', async function(req, res) {
+app.get('/getSubjects', async function (req, res) {
     // 從請求中獲取考試名稱
     var testName = req.query.testName;
 
@@ -202,7 +214,7 @@ app.get('/getSubjects', async function(req, res) {
     res.status(200).json(test.subject);
 });
 
-app.post('/deleteTest', async function(req, res) {
+app.post('/deleteTest', async function (req, res) {
     // 從請求中獲取考試名稱
     var testName = req.body.testName;
 
@@ -229,7 +241,7 @@ app.post('/deleteTest', async function(req, res) {
         });
 });
 
-app.post('/clearAllData', async function(req, res) {
+app.post('/clearAllData', async function (req, res) {
     // 從session中獲取用戶名稱
     var username = req.session.user.username;
 
@@ -251,7 +263,7 @@ app.post('/clearAllData', async function(req, res) {
         });
 });
 
-app.post('/clearAllFreeTime', async function(req, res) {
+app.post('/clearAllFreeTime', async function (req, res) {
     // 從session中獲取用戶名稱
     var username = req.session.user.username;
 
