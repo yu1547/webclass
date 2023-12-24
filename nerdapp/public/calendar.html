@@ -5,14 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>排程表</title>
-    <link href="fullcalendar.min.css" rel="stylesheet">
-    <script src="moment.min.js"></script>
-    <script src="jquery.min.js"></script>
-    <script src="fullcalendar.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>    <style>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
+    <style>
         body {
             font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
             margin: 20px;
@@ -48,7 +45,6 @@
         #countdown,
         #todo-list,
         #task-completion {
-            margin-bottom: 10px;
             text-align: center;
             background-color: #c1d3ec;
             border-radius: 25px;
@@ -260,7 +256,7 @@
 
         // To-Do List
         var todoList = document.getElementById("todo-items");
-        var completedTasks = document.getElementById("completed-tasks-chart");
+        var completedTasks;
         var tasks = ["Task 1", "Task 2", "Task 3", "Task 4", "Task 5"];
 
         tasks.forEach(function (task) {
@@ -323,6 +319,7 @@
                     label: 'Task Completion',
                     data: [dailyCompletion, weeklyCompletion, monthlyCompletion],
                     backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
+                    fontColor:['#36a2eb']
                 }],
             },
             options: {
@@ -330,24 +327,24 @@
                 scales: {
                     xAxes: [{
                         ticks: {
-                            color: 'white',
+                            fontColor: 'white',
                         }
                     }],
                     yAxes: [{
                         ticks: {
                             beginAtZero: true,
-                            max: 100,
-                            color: 'white',
+                            fontColor: 'white',
                             callback: function (value) {
                                 return value + '%';
-                            }
+                            },
+                            max: 100,  // 设置 Y 轴的最大值为 100
                         }
                     }],
                 },
                 plugins: {
                     legend: {
                         labels: {
-                            color: 'black',
+                            fontColor: 'black',
                         }
                     }
                 }
@@ -355,20 +352,24 @@
         });
 
         function updateChart() {
-            var completedCount = completedTasks.querySelectorAll('label').length;
-            var completionPercentage = (completedCount / tasks.length) * 100;
-        
-            var weeklyTasksCount = tasks.length * 7;
-            var weeklyCompletion = (completedCount / weeklyTasksCount) * 100;
-        
-            var monthlyTasksCount = tasks.length * 30;
-            var monthlyCompletion = (completedCount / monthlyTasksCount) * 100;
-        
-            completionChart.data.datasets[0].data = [completionPercentage, weeklyCompletion, monthlyCompletion];
-            completionChart.update();
+            var completedTasks = 1;
+            var todoItemsElement = 5;
+
+                var tasks = 5;
+                
+                var completedCount = 1;
+
+                var completionPercentage = (completedCount / 5) * 100;
+
+                var weeklyTasksCount = 5 * 7;
+                var weeklyCompletion = (completedCount / weeklyTasksCount) * 100;
+
+                var monthlyTasksCount = 5 * 30;
+                var monthlyCompletion = (completedCount / monthlyTasksCount) * 100;
+
+                completionChart.data.datasets[0].data = [completionPercentage, weeklyCompletion, monthlyCompletion];
+                completionChart.update();
         }
-        
-        
     });
 </script>
 
