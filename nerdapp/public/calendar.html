@@ -99,7 +99,7 @@
 
     <script>
         let tests = [];
-        let freeTime = [];
+        let FreeTime = [];
         // const tests = [
         //     {
         //         name: "期末考",
@@ -154,7 +154,7 @@
                     } else {
                         // 否則，計算新的 todolist
                         tests = data.tests;
-                        freeTime = data.freeTime;
+                        FreeTime = data.freeTime;
                         resetSchedule();
                         displayTodoList(resultList);
                         console.log(resultList)
