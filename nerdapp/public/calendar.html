@@ -3,7 +3,6 @@
 
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Planner</title>
@@ -83,7 +82,6 @@
             border: none;
         }
     </style>
-
 </head>
 
 <body>
@@ -94,12 +92,10 @@
         <a href="#" class="navbar-item" id="reset">重新調整</a>
     </div>
     <ul id="ToDoList">
-
     </ul>
-<script src="calendar.js"></script>
     <script>
         let tests = [];
-        let FreeTime = [];
+        let freeTime = [];
         // const tests = [
         //     {
         //         name: "期末考",
@@ -141,20 +137,18 @@
                     });
                 }
             });
-
             $.ajax({
                 url: '/getTest',
                 type: 'GET',
                 success: function (data) {
                     // 如果使用者有儲存過 todolist，那麼就使用這個 todolist
-                    console.log("data.todoList.length", data.todoList.length)
-                    if (data.todoList.length > 0) {
+                    if (data.todoList.length >0) {
                         console.log(data.todoList)
                         displayTodoList(data.todoList);
                     } else {
                         // 否則，計算新的 todolist
                         tests = data.tests;
-                        FreeTime = data.freeTime;
+                        freeTime = data.freeTime;
                         resetSchedule();
                         displayTodoList(resultList);
                         console.log(resultList)
@@ -172,115 +166,63 @@
                 }
             });
         });
-
-
         let resultList = [];
-        
-        function isTimeInUserFreeSlot(freeTimeArray, day, time) {
-            const dayTimeSlots = freeTimeArray.find((slot) => slot.day === day);
-            
-            if (dayTimeSlots) {
-                const startTime = new Date(`1970-01-01 ${dayTimeSlots.startTime}`);
-                const endTime = new Date(`1970-01-01 ${dayTimeSlots.endTime}`);
-                const checkTime = new Date(`1970-01-01 ${time}`);
-            
-                return checkTime >= startTime && checkTime <= endTime;
-            }
-            
-            return false;
-            }
-            
-            // 函數：檢查指定的日期是否在使用者的空閒時間範圍內
-        function isDayInFreeTime(day, freeTimeArray) {
-            const dayTimeSlots = freeTimeArray.find((slot) => slot.day === day);
-            return !!dayTimeSlots;
-        }
-
         function calculateWeight(exam, currentDate) {
             const daysDifference = Math.ceil((exam.date - currentDate) / (1000 * 60 * 60 * 24));
             // 如果考試當天，將權重設為一個較大的數字（例如10），避免使用Infinity
             return daysDifference === 0 ? 10 : exam.importance / daysDifference;
         }
-
-
         function findAvailableTime(currentDate) {
             return 60;
         }
-
         function findBestSubject(tests) {
             return tests[0];
         }
-
         const ToDoListElement = document.getElementById("ToDoList");
-
         const currentDate = new Date();
         const tomorrow = new Date(currentDate);
         tomorrow.setDate(currentDate.getDate() + 1);
-
         function resetSchedule() {
             console.log("Start resetSchedule"); // 新增這行
-
             ToDoListElement.innerHTML = ""; // 清空 ToDoList
             unscheduledSubjectsList = []; // 清空未能安排的科目列表
-
             while (tests.length > 0) {
                 console.log("Inside loop"); // 新增這行
-
                 let availableTime = findAvailableTime(tomorrow);
-
                 if (availableTime >= 25) {
-                    console.log("Inside if statement"); // 新增這行 
-
+                    console.log("Inside if statement"); // 新增這行
                     const selectedItem = findBestSubject(tests);
-                    console.log(typeof selectedItem.date, selectedItem.date); //檢查selectedItem.date 是不是Date物件
-                    
-                    const isDayFree = isDayInFreeTime(selectedItem.date.toLocaleDateString('en-US', { weekday: 'long' }), FreeTime);
-
-                    
-                    if (isDayFree){
-                        const todoItem = {
-                            name: selectedItem.name,
-                            date: new Date(tomorrow),
-                            importance: selectedItem.importance,
-                            subject: selectedItem.subject[0].name,
-                            clock: selectedItem.subject[0].clock,
-                            finish: 0,
-                            weight: calculateWeight(selectedItem, currentDate)
-                        };
-    
-                        selectedItem.subject[0].clock -= 1;
-                        if (selectedItem.subject[0].clock === 0) {
-                            tests.splice(tests.indexOf(selectedItem), 1);
-                        }
-    
-                        availableTime -= 25;
-    
-                        resultList.push(todoItem);
-                        tomorrow.setMinutes(tomorrow.getMinutes() + 25);
-    
-                        if (resultList.length % 3 === 0) {
-                            const breakElement = document.createElement("br");
-                            ToDoListElement.appendChild(breakElement);
-                        }
-                    }    
-                    else {
+                    const todoItem = {
+                        name: selectedItem.name,
+                        date: new Date(tomorrow),
+                        importance: selectedItem.importance,
+                        subject: selectedItem.subject[0].name,
+                        clock: selectedItem.subject[0].clock,
+                        finish: 0,
+                        weight: calculateWeight(selectedItem, currentDate)
+                    };
+                    selectedItem.subject[0].clock -= 1;
+                    if (selectedItem.subject[0].clock === 0) {
+                        tests.splice(tests.indexOf(selectedItem), 1);
+                    }
+                    availableTime -= 25;
+                    resultList.push(todoItem);
+                    tomorrow.setMinutes(tomorrow.getMinutes() + 25);
+                    if (resultList.length % 3 === 0) {
+                        const breakElement = document.createElement("br");
+                        ToDoListElement.appendChild(breakElement);
+                    }
+                } else {
                     console.log("Inside else statement"); // 新增這行
                     // 若無法安排，將科目添加到未能安排的科目列表
                     const unscheduledSubject = tests.shift();
                     unscheduledSubjectsList.push(unscheduledSubject);
                     tomorrow.setDate(tomorrow.getDate() + 1);
                     tomorrow.setHours(9, 0);
-                    }
-            }else{
-                const unscheduledSubject = tests.shift();
-                unscheduledSubjectsList.push(unscheduledSubject);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(9, 0);
+                }
             }
-}
             console.log("End resetSchedule"); // 新增這行
             resultList = resultList.filter(item => item.date >= currentDate);
-            
             // resultList.forEach(item => {
             //     const minutes = item.date.getMinutes().toString().padStart(2, '0');
             //     const hours = item.date.getHours().toString().padStart(2, '0');
@@ -298,7 +240,6 @@
             //         `;
             //     ToDoListElement.appendChild(listItem);
             // });
-
             // 現在在生成完行程表後檢查未能安排的科目
             checkUnscheduledSubjects();
         }
@@ -309,8 +250,7 @@
                 const hours = date.getHours().toString().padStart(2, '0');
                 const listItem = document.createElement("li");
                 listItem.className = "schedule-item";
-                listItem.innerHTML = `
-            <strong>${item.name}</strong><br>
+                listItem.innerHTML = `          <strong>${item.name}</strong><br>
             Date: ${date.toLocaleDateString()}<br>
             Time: ${hours}:${minutes}<br>
             Subject: ${item.subject} (剩下${item.clock}🍅)<br>
@@ -325,13 +265,10 @@
             const unscheduledSubjectsString = unscheduledSubjectsList
                 .map(subject => `${subject.name} (剩餘${subject.subject[0].clock}小時)`)
                 .join(", ");
-
             if (unscheduledSubjectsString) {
                 window.alert(`以下科目未能排入日程表: ${unscheduledSubjectsString}`);
             }
         }
-
-
         // 初始化頁面時執行一次
         resetSchedule();
     </script>
