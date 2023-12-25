@@ -131,7 +131,7 @@
 
 <body>
     <header>
-        <h2 style="position: fixed;left:50%;top:5px;">月曆介面</h>
+        <h2 style="position: fixed;left:50%;top:5px;">月曆介面</h2>
     </header>
     <div id="navbar">
         <a href="dashboard.html" class="navbar-item">重新調整</a>
@@ -440,59 +440,64 @@
                 // 從排日曆的當天開始，一直往後排，直到佇列為空
                 const currentDate = new Date();
                 while (queue.length > 0) {
-                    // 獲取當天的空閒時間
+                    // Get today's free time slots
                     const todayFreeTime = freeTime.data.freeTime.filter(time => {
-                        // Convert the start time of the time slot to a Date object
                         const timeSlotStartDate = new Date(time.start);
-                    
-                        // Get the current date
-                        const currentDate = new Date();
-                    
-                        // Check if the time slot is for today
                         const isToday = (
                             timeSlotStartDate.getDate() === currentDate.getDate() &&
                             timeSlotStartDate.getMonth() === currentDate.getMonth() &&
                             timeSlotStartDate.getFullYear() === currentDate.getFullYear()
                         );
-                    
-                        // Return true for time slots that are today
                         return isToday;
-                    });                    
-    
+                    });
+
                     if (todayFreeTime.length > 0) {
-                        // 假設排序方法為按權重遞減排序
+                        // Sort the queue by weight in descending order
                         queue.sort((a, b) => b.weight - a.weight);
-    
-                        // 假設時間段至少要有 25 分鐘
+
                         const timeSlotDuration = 25; // in minutes
-    
-                        // 找到第一個符合條件的時間段
+
+                        // Find the first available time slot
                         const availableTimeSlot = todayFreeTime.find(timeSlot => {
                             return (timeSlot.end - timeSlot.start) >= timeSlotDuration;
                         });
-    
+
                         if (availableTimeSlot) {
-                            // 計算當天的權重，排序，將權重最大的事件放入月曆
                             const selectedEvent = queue.shift();
                             await saveEventToCalendar(selectedEvent.subjects, availableTimeSlot.start, availableTimeSlot.end);
-    
-                            // 更新時間段，加上休息時間
+
+                            // Update the time slot, adding 5 minutes for rest
                             availableTimeSlot.start = availableTimeSlot.end + 5;
-    
-                            // 更新 Chart.js 圖表，加上完成的番茄數
+
+                            // Update the Chart.js chart, adding completed tomatoes
                             dailyCompletedCount += selectedEvent.subjects.reduce((acc, subject) => acc + subject.tomatoes, 0);
                             updateChart();
                         }
                     }
-    
-                    // 當前日期加一天
-                    currentDate.setDate(currentDate.getDate() + 1);
+
+                    currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
                 }
-    
+
+                // Calculate the completion percentage for each test
+                const testCompletion = calculateTestCompletion(tests.data.tests);
+
+                // Update the Chart.js chart with daily, test, and monthly completion
+                completionChart.data.datasets[0].data = [dailyCompletedCount, testCompletion.reduce((a, b) => a + b, 0), monthlyCompletion];
+                completionChart.update();
+
                 console.log('Events added to calendar successfully.');
             } catch (error) {
                 console.error(error);
             }
+        }
+
+        function calculateTestCompletion(tests) {
+            // 計算每個大考的完成度
+            return tests.map(test => {
+                const totalTomatoes = test.subject.reduce((acc, subject) => acc + subject.tomatoes, 0);
+                const completedTomatoes = test.finish || 0;
+                return (completedTomatoes / totalTomatoes) * 100 || 0;
+            });
         }
 
         function calculateTomatoes(clock) {
