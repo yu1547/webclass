@@ -1,40 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Planner</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        header h1 {
+            text-align: center;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: #105aa7;
+            text-align: center;
+            align-items: center;
+            padding: 10px;
+            background-color: #c1d3ec;
+            border: none;
+            border-radius: 50px;
+            width: 400px;
+            margin-left: 35%;
+            margin-top: 2%;
         }
 
         #ToDoList {
             list-style: none;
-            padding: 0;
+            padding: 10px;
+            text-align: center;
+            margin-top: 2%;
         }
 
         .schedule-item {
-            font-family:'Courier New', Courier, monospace;
-            margin-bottom: 10px;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 10px;
             padding: 10px 20px 10px 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            border: 2px solid #105aa7;
+            background-color: #c1d3ec;
+            border-radius: 30px;
+            display: inline-block;
+            width: calc(25% - 10px);
+            box-sizing: border-box;
         }
 
         .checkbox-label {
             margin-left: 10px;
         }
-    </style>
-</head>
-<body>
-    <h1>Schedule Planner</h1>
 
+        #navbar {
+            position: fixed;
+            top: 12px;
+            background-color: #105aa7;
+            color: rgb(32, 32, 32);
+            cursor: pointer;
+            z-index: 1;
+            padding: 3px;
+            border-radius: 30px;
+            text-align: left;
+            margin-left: 2%;
+        }
+
+        #navbar:hover {
+            border-radius: 30px;
+            border: none;
+        }
+
+        .navbar-item {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            padding: 7px;
+            text-decoration: none;
+            display: block;
+            color: rgb(255, 255, 255);
+        }
+
+        .navbar-item:hover {
+            background-color: #c1d3ec;
+            color: #105aa7;
+            border-radius: 30px;
+            border: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <h1>Schedule Planner</h1>
+    </header>
+    <div id="navbar">
+        <a href="dashboard.html" class="navbar-item">重新調整</a>
+    </div>
     <ul id="ToDoList">
 
     </ul>
 
     <script>
+        let unscheduledSubjectsList = [];
+
         const tests = [
             {
                 name: "期末考",
@@ -61,21 +124,19 @@
 
         let resultList = [];
 
-        // 計算權重的函數（示例，你需要根據實際情況調整）
         function calculateWeight(exam, currentDate) {
             const daysDifference = Math.ceil((exam.date - currentDate) / (1000 * 60 * 60 * 24));
-            return exam.importance / daysDifference;
+            // 如果考試當天，將權重設為一個較大的數字（例如10），避免使用Infinity
+            return daysDifference === 0 ? 10 : exam.importance / daysDifference;
         }
+        
 
-        // 查找可用時間的函數（示例，你需要根據實際情況調整）
         function findAvailableTime(currentDate) {
-            // 返回一個假定的可用時間（分鐘）
             return 60;
         }
 
-        // 找到最佳科目的函數（示例，你需要根據實際情況調整）
         function findBestSubject(tests) {
-            return tests[0]; // 這裡假定第一個科目是最佳的
+            return tests[0];
         }
 
         const ToDoListElement = document.getElementById("ToDoList");
@@ -83,60 +144,94 @@
         const currentDate = new Date();
         const tomorrow = new Date(currentDate);
         tomorrow.setDate(currentDate.getDate() + 1);
+    
+        function resetSchedule() {
+            console.log("Start resetSchedule"); // 新增這行
 
-        while (tests.length > 0) {
-            let availableTime = findAvailableTime(tomorrow);
+            ToDoListElement.innerHTML = ""; // 清空 ToDoList
+            unscheduledSubjectsList = []; // 清空未能安排的科目列表
+    
+            while (tests.length > 0) {
+                console.log("Inside loop"); // 新增這行
 
-            if (availableTime >= 25) {
-                const selectedItem = findBestSubject(tests);
-                const todoItem = {
-                    name: selectedItem.name,
-                    date: new Date(tomorrow), // Create a new date object to avoid reference issues
-                    importance: selectedItem.importance,
-                    subject: selectedItem.subject[0].name,
-                    clock: selectedItem.subject[0].clock,
-                    finish: 0,
-                    weight: calculateWeight(selectedItem, currentDate)
-                };
+                let availableTime = findAvailableTime(tomorrow);
+    
+                if (availableTime >= 25) {
+                    console.log("Inside if statement"); // 新增這行
 
-                selectedItem.subject[0].clock -= 1;
-                if (selectedItem.subject[0].clock === 0) {
-                    tests.splice(tests.indexOf(selectedItem), 1);
+                    const selectedItem = findBestSubject(tests);
+                    const todoItem = {
+                        name: selectedItem.name,
+                        date: new Date(tomorrow),
+                        importance: selectedItem.importance,
+                        subject: selectedItem.subject[0].name,
+                        clock: selectedItem.subject[0].clock,
+                        finish: 0,
+                        weight: calculateWeight(selectedItem, currentDate)
+                    };
+    
+                    selectedItem.subject[0].clock -= 1;
+                    if (selectedItem.subject[0].clock === 0) {
+                        tests.splice(tests.indexOf(selectedItem), 1);
+                    }
+    
+                    availableTime -= 25;
+    
+                    resultList.push(todoItem);
+                    tomorrow.setMinutes(tomorrow.getMinutes() + 25);
+    
+                    if (resultList.length % 3 === 0) {
+                        const breakElement = document.createElement("br");
+                        ToDoListElement.appendChild(breakElement);
+                    }
+                } else {
+                    console.log("Inside else statement"); // 新增這行
+                    // 若無法安排，將科目添加到未能安排的科目列表
+                    const unscheduledSubject = tests.shift();
+                    unscheduledSubjectsList.push(unscheduledSubject);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    tomorrow.setHours(9, 0);
                 }
-
-                availableTime -= 25;
-
-                resultList.push(todoItem);
-                ToMaTo=selectedItem.subject[0].clock;
-                // Add the time spent on the subject to the next item
-                tomorrow.setMinutes(tomorrow.getMinutes() + 25*ToMaTo);
-            } else {
-                // If there's not enough time, move to the next day
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                tomorrow.setHours(9, 0); // Reset to the beginning of the day
+            }
+            console.log("End resetSchedule"); // 新增這行
+            resultList = resultList.filter(item => item.date >= currentDate);
+    
+            resultList.forEach(item => {
+                const minutes = item.date.getMinutes().toString().padStart(2, '0');
+                const hours = item.date.getHours().toString().padStart(2, '0');
+                const listItem = document.createElement("li");
+                listItem.className = "schedule-item";
+                listItem.innerHTML = `
+                        <strong>${item.name}</strong><br>
+                        Date: ${item.date.toLocaleDateString()}<br>
+                        Time: ${hours}:${minutes}<br>
+                        Subject: ${item.subject} (剩下${item.clock}&#127813)<br>
+                        <label class="checkbox-label">
+                            <input type="checkbox"> Finish
+                        </label>
+                        <br>
+                    `;
+                ToDoListElement.appendChild(listItem);
+            });
+    
+            // 現在在生成完行程表後檢查未能安排的科目
+            checkUnscheduledSubjects();
+        }
+    
+        function checkUnscheduledSubjects() {
+            const unscheduledSubjectsString = unscheduledSubjectsList
+                .map(subject => `${subject.name} (剩餘${subject.subject[0].clock}小時)`)
+                .join(", ");
+        
+            if (unscheduledSubjectsString) {
+                window.alert(`以下科目未能排入日程表: ${unscheduledSubjectsString}`);
             }
         }
-
-        // 過濾時間早於考試日期的科目
-        resultList = resultList.filter(item => item.date >= currentDate);
-
-        resultList.forEach(item => {
-            const minutes = item.date.getMinutes().toString().padStart(2, '0');
-            const hours = item.date.getHours().toString().padStart(2, '0');
-            const listItem = document.createElement("li");
-            listItem.className = "schedule-item";
-            listItem.innerHTML = `
-                <strong>${item.name}</strong><br>
-                Date: ${item.date.toLocaleDateString()}<br>
-                Time: ${hours}:${minutes}<br>
-                Subject: ${item.subject} ( ${item.clock} &#127813 )<br>
-                <label class="checkbox-label">
-                    <input type="checkbox"> Finish
-                </label>
-                <br>
-            `;
-            ToDoListElement.appendChild(listItem);
-        });
+        
+    
+        // 初始化頁面時執行一次
+        resetSchedule();
     </script>
 </body>
+
 </html>
