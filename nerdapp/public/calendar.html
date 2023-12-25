@@ -147,7 +147,9 @@
                 type: 'GET',
                 success: function (data) {
                     // 如果使用者有儲存過 todolist，那麼就使用這個 todolist
+                    console.log("data.todoList.length", data.todoList.length)
                     if (data.todoList.length > 0) {
+                        console.log(data.todoList)
                         displayTodoList(data.todoList);
                     } else {
                         // 否則，計算新的 todolist
@@ -155,6 +157,7 @@
                         freeTime = data.freeTime;
                         resetSchedule();
                         displayTodoList(resultList);
+                        console.log(resultList)
                         // 儲存新的 todolist
                         $.ajax({
                             url: '/saveTodoList',
@@ -266,25 +269,24 @@
             // 現在在生成完行程表後檢查未能安排的科目
             checkUnscheduledSubjects();
         }
-        function displayTodoList() {
-            resultList.forEach(item => {
-                const minutes = item.date.getMinutes().toString().padStart(2, '0');
-                const hours = item.date.getHours().toString().padStart(2, '0');
+        function displayTodoList(todo) {
+            todo.forEach(item => {
+                const date = new Date(item.date);
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                const hours = date.getHours().toString().padStart(2, '0');
                 const listItem = document.createElement("li");
                 listItem.className = "schedule-item";
                 listItem.innerHTML = `
-                        <strong>${item.name}</strong><br>
-                        Date: ${item.date.toLocaleDateString()}<br>
-                        Time: ${hours}:${minutes}<br>
-                        Subject: ${item.subject} (剩下${item.clock}&#127813)<br>
-                        <label class="checkbox-label">
-                            <input type="checkbox"> Finish
-                        </label>
-                        <br>
-                    `;
+            <strong>${item.name}</strong><br>
+            Date: ${date.toLocaleDateString()}<br>
+            Time: ${hours}:${minutes}<br>
+            Subject: ${item.subject} (剩下${item.clock}🍅)<br>
+            <br>
+        `;
                 ToDoListElement.appendChild(listItem);
             });
         }
+
 
         function checkUnscheduledSubjects() {
             const unscheduledSubjectsString = unscheduledSubjectsList

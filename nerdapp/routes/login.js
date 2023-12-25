@@ -308,7 +308,7 @@ app.put('/saveTodoList', async (req, res) => {
     if (!user) {
         return res.status(404).send('User not found');
     }
-    user.data.todoList = req.body;
+    user.data.todoList = req.body.todoList;
     await user.save();
     res.send(user);
 });
