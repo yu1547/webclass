@@ -232,7 +232,8 @@
                     console.log("Inside if statement"); // 新增這行
 
                     const selectedItem = findBestSubject(tests);
-                    const isDayFree = isDayInFreeTime(selectedItem.date.toLocaleDateString('en-US', { weekday: 'long' }), FreeTime);
+                    const isDayFree = isDayInFreeTime(selectedItem.date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase(), FreeTime);
+
                     
                     if (isDayFree){
                         const todoItem = {
