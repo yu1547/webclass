@@ -142,24 +142,6 @@ while (tests.length > 0) {
 
 resultList = resultList.filter(item => item.date >= currentDate);
 
-resultList.forEach(item => {
-    const minutes = item.date.getMinutes().toString().padStart(2, '0');
-    const hours = item.date.getHours().toString().padStart(2, '0');
-    const listItem = document.createElement("li");
-    listItem.className = "schedule-item";
-    listItem.innerHTML = `
-            <strong>${item.name}</strong><br>
-            Date: ${item.date.toLocaleDateString()}<br>
-            Time: ${hours}:${minutes}<br>
-            Subject: ${item.subject} (剩下${item.clock}&#127813)<br>
-            <label class="checkbox-label">
-                <input type="checkbox"> Finish
-            </label>
-            <br>
-        `;
-    ToDoListElement.appendChild(listItem);
-});
-
 checkUnscheduledSubjects();
 }
 

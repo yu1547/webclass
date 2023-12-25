@@ -177,6 +177,26 @@
 
 
         let resultList = [];
+        
+        function isTimeInUserFreeSlot(freeTimeArray, day, time) {
+            const dayTimeSlots = freeTimeArray.find((slot) => slot.day === day);
+            
+            if (dayTimeSlots) {
+                const startTime = new Date(`1970-01-01 ${dayTimeSlots.startTime}`);
+                const endTime = new Date(`1970-01-01 ${dayTimeSlots.endTime}`);
+                const checkTime = new Date(`1970-01-01 ${time}`);
+            
+                return checkTime >= startTime && checkTime <= endTime;
+            }
+            
+            return false;
+            }
+            
+            // 函數：檢查指定的日期是否在使用者的空閒時間範圍內
+        function isDayInFreeTime(day, freeTimeArray) {
+            const dayTimeSlots = freeTimeArray.find((slot) => slot.day === day);
+            return !!dayTimeSlots;
+        }
 
         function calculateWeight(exam, currentDate) {
             const daysDifference = Math.ceil((exam.date - currentDate) / (1000 * 60 * 60 * 24));
@@ -214,42 +234,52 @@
                     console.log("Inside if statement"); // 新增這行
 
                     const selectedItem = findBestSubject(tests);
-                    const todoItem = {
-                        name: selectedItem.name,
-                        date: new Date(tomorrow),
-                        importance: selectedItem.importance,
-                        subject: selectedItem.subject[0].name,
-                        clock: selectedItem.subject[0].clock,
-                        finish: 0,
-                        weight: calculateWeight(selectedItem, currentDate)
-                    };
-
-                    selectedItem.subject[0].clock -= 1;
-                    if (selectedItem.subject[0].clock === 0) {
-                        tests.splice(tests.indexOf(selectedItem), 1);
-                    }
-
-                    availableTime -= 25;
-
-                    resultList.push(todoItem);
-                    tomorrow.setMinutes(tomorrow.getMinutes() + 25);
-
-                    if (resultList.length % 3 === 0) {
-                        const breakElement = document.createElement("br");
-                        ToDoListElement.appendChild(breakElement);
-                    }
-                } else {
+                    const isDayFree = isDayInFreeTime(selectedItem.date.toLocaleDateString('en-US', { weekday: 'long' }), FreeTime);
+                    
+                    if (isDayFree){
+                        const todoItem = {
+                            name: selectedItem.name,
+                            date: new Date(tomorrow),
+                            importance: selectedItem.importance,
+                            subject: selectedItem.subject[0].name,
+                            clock: selectedItem.subject[0].clock,
+                            finish: 0,
+                            weight: calculateWeight(selectedItem, currentDate)
+                        };
+    
+                        selectedItem.subject[0].clock -= 1;
+                        if (selectedItem.subject[0].clock === 0) {
+                            tests.splice(tests.indexOf(selectedItem), 1);
+                        }
+    
+                        availableTime -= 25;
+    
+                        resultList.push(todoItem);
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 25);
+    
+                        if (resultList.length % 3 === 0) {
+                            const breakElement = document.createElement("br");
+                            ToDoListElement.appendChild(breakElement);
+                        }
+                    }    
+                    else {
                     console.log("Inside else statement"); // 新增這行
                     // 若無法安排，將科目添加到未能安排的科目列表
                     const unscheduledSubject = tests.shift();
                     unscheduledSubjectsList.push(unscheduledSubject);
                     tomorrow.setDate(tomorrow.getDate() + 1);
                     tomorrow.setHours(9, 0);
-                }
+                    }
+            }else{
+                const unscheduledSubject = tests.shift();
+                unscheduledSubjectsList.push(unscheduledSubject);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(9, 0);
             }
+}
             console.log("End resetSchedule"); // 新增這行
             resultList = resultList.filter(item => item.date >= currentDate);
-
+            
             // resultList.forEach(item => {
             //     const minutes = item.date.getMinutes().toString().padStart(2, '0');
             //     const hours = item.date.getHours().toString().padStart(2, '0');
