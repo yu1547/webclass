@@ -1,533 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>排程表</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
+    <title>Schedule Planner</title>
     <style>
         body {
-            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-            margin: 20px;
-            display: flex;
-            justify-content: space-between;
-            /* Added to distribute space between the calendar and sidebar */
+            font-family: Arial, sans-serif;
         }
 
-        header h2 {
-            text-align: center;
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        #ToDoList {
+            list-style: none;
+            padding: 0;
         }
 
-        #calendar {
-            width: 65%;
-            /* Adjusted width for the calendar */
-            margin-top: 50px;
-            /* Added margin to create space above the calendar */
-            background-color: #c1d3ec;
+        .schedule-item {
+            margin-bottom: 10px;
             padding: 10px;
-            border-radius: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
 
-        #sidebar {
-            width: 30%;
-            background-color: #105aa7;
-            padding: 10px;
-            box-sizing: border-box;
-            margin-top: 50px;
-            border-radius: 25px;
-        }
-
-        #countdown,
-        #todo-list,
-        #task-completion {
-            text-align: center;
-            background-color: #c1d3ec;
-            border-radius: 25px;
-        }
-
-        #countdown h3,
-        #todo-list h3 {
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-        }
-
-        #navbar {
-            position: fixed;
-            top: 12px;
-            background-color: #105aa7;
-            color: rgb(32, 32, 32);
-            cursor: pointer;
-            z-index: 1;
-            padding: 3px;
-            border-radius: 30px;
-            text-align: left;
-            margin-left: 2%;
-        }
-
-        #dropdown-content {
-            display: none;
-            position: relative;
-            background-color: #105aa7;
-            min-width: 160px;
-            box-shadow: 0 8px 16px rgba(48, 48, 48, 0.2);
-            z-index: 1;
-            text-align: left;
-        }
-
-        #navbar:hover #dropdown-content {
-            display: block;
-        }
-
-        #navbar:hover {
-            border-radius: 30px;
-            border: none;
-        }
-
-        .navbar-item {
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-            padding: 7px;
-            text-decoration: none;
-            display: block;
-            color: rgb(255, 255, 255);
-        }
-
-        .navbar-item:hover {
-            background-color: #c1d3ec;
-            color: #105aa7;
-            border-radius: 30px;
-            border: none;
-        }
-
-        #completed-tasks-chart {
-            display: flex;
-            flex-direction: row;
-            /* Change to row to display tasks horizontally */
-            align-items: center;
-        }
-
-        #completed-tasks-chart div {
-            display: inline-block;
-        }
-
-        @media only screen and (max-width: 600px) {
-            body {
-                flex-direction: column;
-            }
-
-            #calendar {
-                width: 100%;
-            }
-
-            #sidebar {
-                width: 100%;
-            }
+        .checkbox-label {
+            margin-left: 10px;
         }
     </style>
 </head>
-
 <body>
-    <header>
-        <h2 style="position: fixed;left:50%;top:5px;">月曆介面</h2>
-    </header>
-    <div id="navbar">
-        <a href="dashboard.html" class="navbar-item">重新調整</a>
-        <!-- <div id="dropdown-content">
-            <a href="#" class="navbar-item">考試 & 時間</a>
-        </div> -->
-    </div>
+    <h1>Schedule Planner</h1>
 
-    <div id="calendar"></div>
+    <ul id="ToDoList">
 
-    <div id="sidebar">
-        <div id="countdown">
-            <h3 style="padding-top:10px">倒數計時</h3>
-            <div id="countdown-timer" style="font-family:Cambria;padding-bottom:10px"></div>
-        </div>
-        <div id="todo-list">
-            <h3 style="padding-top:10px">今天的代辦事項</h3>
-            <div id="todo-items" style="padding-bottom:10px">
-                <!-- Checkbox added to each task -->
-        </div>
-        <div id="task-completion">
-            <h3 style="padding-top: 10px">完成任務</h3>
-            <div id="completion-chart-container" style="height: 200px;">
-                <canvas id="completion-chart"></canvas>
-            </div>
-
-        </div>
-
-    </div>
-    <div style="position: fixed;bottom: 5px;left:5px">
-        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-            <img src="https://yu1547.github.io/webclass/images/gateway.png" alt="Art World Gateway" target="_blank"
-                style="height: 70px">
-        </a>
-    </div>
-
-
-    <!-- Add this script tag to include Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </ul>
 
     <script>
-        var countdownDate = new Date("2023-12-31T23:59:59");
-        var countdownElement = document.getElementById("countdown-timer");
+        const tests = [
+        	{
+            	name: "期末考",
+            	date: new Date("2023-12-31"),
+            	importance: 6,
+            	subject: [
+                	{ name: "數學", clock: 4, finish: 0 },
+                	{ name: "物理", clock: 3, finish: 0 }
+            	],
+            	finish: 0,
+            	total: 0
+        	},
+        	{
+            	name: "微積分",
+            	date: new Date("2023-1-31"),
+            	importance: 2,
+            	subject: [
+                	{ name: "微積分", clock:13, finish: 0 },
+            	],
+            	finish: 0,
+            	total: 0
+        	}
+    	];
 
-        var countdownInterval = setInterval(function () {
-            var now = new Date();
-            var distance = countdownDate - now;
 
-            var months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
-            var days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+        let resultList = [];
 
-            var countdownText = "新年還有" + "<br>" + months + " M " + days + " D";
+        // 計算權重的函數（示例，你需要根據實際情況調整）
+        function calculateWeight(exam, currentDate) {
+            const daysDifference = Math.ceil((exam.date - currentDate) / (1000 * 60 * 60 * 24));
+            return exam.importance / daysDifference;
+        }
 
-            countdownElement.innerHTML = countdownText;
+        // 查找可用時間的函數（示例，你需要根據實際情況調整）
+        function findAvailableTime(currentDate) {
+            // 返回一個假定的可用時間（分鐘）
+            return 60;
+        }
 
-            if (distance < 0) {
-                clearInterval(countdownInterval);
-                countdownElement.innerHTML = "EXPIRED";
+        // 找到最佳科目的函數（示例，你需要根據實際情況調整）
+        function findBestSubject(tests) {
+            return tests[0]; // 這裡假定第一個科目是最佳的
+        }
+
+        const ToDoListElement = document.getElementById("ToDoList");
+
+        const currentDate = new Date();
+        const tomorrow = new Date(currentDate);
+        tomorrow.setDate(currentDate.getDate() + 1);
+
+        while (tests.length > 0) {
+            let availableTime = findAvailableTime(tomorrow);
+
+            if (availableTime >= 25) {
+                const selectedItem = findBestSubject(tests);
+                const todoItem = {
+                    name: selectedItem.name,
+                    date: tomorrow,
+                    importance: selectedItem.importance,
+                    subject: selectedItem.subject[0].name,
+                    clock: selectedItem.subject[0].clock,
+                    finish: 0,
+                    weight: calculateWeight(selectedItem, currentDate)
+                };
+
+                selectedItem.subject[0].clock -= 1;
+                if (selectedItem.subject[0].clock === 0) {
+                    tests.splice(tests.indexOf(selectedItem), 1);
+                }
+
+                availableTime -= 25;
+
+                resultList.push(todoItem);
             }
-        }, 1000);
 
-        var todoList = document.getElementById("todo-items");
-        var completedTasks;
-        var tasks = ["Task 1", "Task 2", "Task 3", "Task 4", "Task 5"];
+            tomorrow.setDate(tomorrow.getDate() + 1);
+        }
 
-        tasks.forEach(function (task) {
-            var listItem = document.createElement("div");
-            
-            // Create checkbox input element
-            var checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = task;
-            checkbox.name = task;
-        
-            // Create label for the checkbox
-            var label = document.createElement("label");
-            label.htmlFor = task;
-            label.appendChild(document.createTextNode(task));
-        
-            // Append checkbox and label to listItem
-            listItem.appendChild(checkbox);
-            listItem.appendChild(label);
-            
-            todoList.appendChild(listItem);
+        // 過濾時間早於考試日期的科目
+        resultList = resultList.filter(item => item.date >= currentDate);
+
+
+        resultList.forEach(item => {
+            const listItem = document.createElement("li");
+            listItem.className = "schedule-item";
+            listItem.innerHTML = `
+                <strong>${item.name}</strong><br>
+                Date: ${item.date.toLocaleDateString()}<br>
+                Time: ${item.date.getHours()}:${item.date.getMinutes()}<br>
+                Subject: ${item.subject} (${item.clock} mins)<br>
+                <label class="checkbox-label">
+                    <input type="checkbox"> Review
+                </label>
+                <br>
+                Importance: ${item.importance}<br>
+                Finish: ${item.finish} mins<br>
+                Weight: ${item.weight}
+            `;
+            ToDoListElement.appendChild(listItem);
         });
-
-        todoList.addEventListener('change', function (event) {
-            if (event.target.type === 'checkbox') {
-                if (event.target.checked) {
-                    completedTasks.appendChild(event.target.parentElement);
-                } else {
-                    todoList.appendChild(event.target.parentElement);
-                }
-                updateChart();
-            }
-        });
-        
-        var completedTasksChartContainer = document.getElementById("completion-chart-container");
-        var ctx = document.getElementById('completion-chart').getContext('2d');
-
-        var dailyCompletion = 0;
-        var weeklyCompletion = 0;
-        var monthlyCompletion = 0;
-
-        var completionChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Daily', 'Weekly', 'Monthly'],
-                datasets: [{
-                    label: 'Task Completion',
-                    data: [dailyCompletion, weeklyCompletion, monthlyCompletion],
-                    backgroundColor: ['#36a2eb', '#ff6384', '#4bc0c0'],
-                    fontColor:['#36a2eb']
-                }],
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    xAxes: [{
-                        ticks: {
-                            fontColor: 'white',
-                        }
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            fontColor: 'white',
-                            callback: function (value) {
-                                return value + '%';
-                            },
-                        }
-                    }],
-                },
-                plugins: {
-                    legend: {
-                        labels: {
-                            fontColor: 'black',
-                        }
-                    }
-                }
-            },
-        });
-
-        var dailyCompletedCount = 0;
-        document.addEventListener('DOMContentLoaded', function () {
-        // FullCalendar initialization
-        function fetchSubjects() {
-            $.ajax({
-                url: "/getExams",
-                type: 'GET',
-                success: function (data) {
-                    renderEvents(data.tests);
-                }
-            });
-        }
-
-        function fetchCalendar() {
-            $.ajax({
-                url: "/getFreeTime",
-                type: 'GET',
-                success: function (data) {
-                    renderFreeTime(data.freeTime);
-                }
-            });
-        }
-        function saveDataToServer() {
-            // yourDataObject 是一個包含數據的對象
-            var yourDataObject = {
-                data: {
-                    "tests": [
-                        {
-                            "name": "微積分",
-                            "date": {
-                                "$date": {
-                                    "$numberLong": "1706054400000"
-                                }
-                            },
-                            "importance": { "$numberInt": "2" },
-                            "subject": [
-                                {
-                                    "name": "微積分",
-                                    "clock": { "$numberInt": "16" },
-                                }
-                            ],
-                        },
-                        {
-                            "name": "期末考",
-                            "date": {
-                                "$date": {
-                                    "$numberLong": "1710806400000"
-                                }
-                            },
-                            "importance": { "$numberInt": "4" },
-                            "subject": [
-                                {
-                                    "name": "計算機概論",
-                                    "clock": { "$numberInt": "9" },
-                                },
-                                {
-                                    "name": "離散數學",
-                                    "clock": { "$numberInt": "6" },
-                                }
-                            ],
-                        }
-                    ],
-                    "freeTime": [
-                        {
-                            "day": "Mon",
-                            "start": "19:00",
-                            "end": "22:00",
-                        },
-                        {
-                            "day": "Mon",
-                            "start": "04:00",
-                            "end": "07:05",
-                        }
-                    ],
-                    "calender": []
-                }
-            };
-        
-            $.ajax({
-                url: "/saveEvent",  // 確保這個 URL 與你的後端應用中的路由相對應
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ data: yourDataObject }),
-                success: function (response) {
-                    console.log('Data saved successfully:', response);
-                },
-                error: function (error) {
-                    console.error('Error saving data:', error);
-                }
-            });
-        }
-        
-            
-
-        $('#calendar').fullCalendar({
-            height: 590,
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            nowIndicator: true,
-            defaultView: 'month',
-            navLinks: true,
-            events: '/getEvents', // Load events from the server
-            eventClick: function (calEvent, jsEvent, view) {
-                // Handle event click if needed
-            }
-        });
-
-        // Fetch events when the calendar is rendered
-        fetchSubjects();
-        fetchCalendar();
-
-        function updateChart() {
-            // 讀取今天的代辦事項列表
-            var todoList = document.getElementById("todo-items");
-            // 所有的任務數
-            var totalTasks = todoList.childElementCount;
-    
-            // 完成的任務數
-            var completedCount = 0;
-    
-            // 遍歷每個任務，統計完成的任務數
-            for (var i = 0; i < totalTasks; i++) {
-                var task = todoList.children[i];
-                var checkbox = task.querySelector('input[type="checkbox"]');
-    
-                if (checkbox.checked) {
-                    completedCount++;
-                }
-            }
-            // 更新今日完成的番茄數
-            dailyCompletedCount = completedCount;
-    
-            // 更新 Chart.js 圖表
-            completionChart.data.datasets[0].data = [dailyCompletedCount, weeklyCompletion, monthlyCompletion];
-            completionChart.update();
-        }
-        async function addEventsToCalendar() {
-            try {
-                // 讀取測試和空閒時間
-                const tests = await $.get("/getExams");
-                const freeTime = await $.get("/getFreeTime");
-    
-                // 計算每個測試的總番茄數和目前完成的番茄數
-                tests.data.tests.forEach(test => {
-                    test.subject.forEach(subject => {
-                        // 假設有一個用於儲存番茄數的欄位
-                        subject.tomatoes = calculateTomatoes(subject.clock);
-                    });
-                });
-    
-                // 將科目添加到佇列，同時帶上權重值
-                const queue = tests.data.tests.map(test => ({
-                    subjects: test.subject,
-                    weight: test.importance,
-                }));
-    
-                // 從排日曆的當天開始，一直往後排，直到佇列為空
-                const currentDate = new Date();
-                while (queue.length > 0) {
-                    // Get today's free time slots
-                    const todayFreeTime = freeTime.data.freeTime.filter(time => {
-                        const timeSlotStartDate = new Date(time.start);
-                        const isToday = (
-                            timeSlotStartDate.getDate() === currentDate.getDate() &&
-                            timeSlotStartDate.getMonth() === currentDate.getMonth() &&
-                            timeSlotStartDate.getFullYear() === currentDate.getFullYear()
-                        );
-                        return isToday;
-                    });
-
-                    if (todayFreeTime.length > 0) {
-                        // Sort the queue by weight in descending order
-                        queue.sort((a, b) => b.weight - a.weight);
-
-                        const timeSlotDuration = 25; // in minutes
-
-                        // Find the first available time slot
-                        const availableTimeSlot = todayFreeTime.find(timeSlot => {
-                            return (timeSlot.end - timeSlot.start) >= timeSlotDuration;
-                        });
-
-                        if (availableTimeSlot) {
-                            const selectedEvent = queue.shift();
-                            await saveEventToCalendar(selectedEvent.subjects, availableTimeSlot.start, availableTimeSlot.end);
-
-                            // Update the time slot, adding 5 minutes for rest
-                            availableTimeSlot.start = availableTimeSlot.end + 5;
-
-                            // Update the Chart.js chart, adding completed tomatoes
-                            dailyCompletedCount += selectedEvent.subjects.reduce((acc, subject) => acc + subject.tomatoes, 0);
-                            updateChart();
-                        }
-                    }
-
-                    currentDate.setDate(currentDate.getDate() + 1); // Move to the next day
-                }
-
-                // Calculate the completion percentage for each test
-                const testCompletion = calculateTestCompletion(tests.data.tests);
-
-                // Update the Chart.js chart with daily, test, and monthly completion
-                completionChart.data.datasets[0].data = [dailyCompletedCount, testCompletion.reduce((a, b) => a + b, 0), monthlyCompletion];
-                completionChart.update();
-
-                console.log('Events added to calendar successfully.');
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        function calculateTestCompletion(tests) {
-            // 計算每個大考的完成度
-            return tests.map(test => {
-                const totalTomatoes = test.subject.reduce((acc, subject) => acc + subject.tomatoes, 0);
-                const completedTomatoes = test.finish || 0;
-                return (completedTomatoes / totalTomatoes) * 100 || 0;
-            });
-        }
-
-        function calculateTomatoes(clock) {
-            return Math.ceil(clock / 25); // 假設每 25 分鐘一個番茄
-        }
-
-        async function saveEventToCalendar(subjects, startTime, endTime) {
-            try {
-                const response = await fetch("/saveEvent", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        subjects,
-                        startTime,
-                        endTime,
-                    }),
-                });
-        
-                if (!response.ok) {
-                    throw new Error(`Failed to save event. Status: ${response.status}`);
-                }
-        
-                const data = await response.json();
-                console.log("Event saved successfully:", data);
-            } catch (error) {
-                console.error("Error saving event:", error);
-            }
-        }
-    });
-</script>
-
+    </script>
 </body>
-
 </html>
