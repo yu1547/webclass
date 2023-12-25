@@ -51,6 +51,7 @@ app.use('/clearAllData', loginRouter);
 app.use('/clearAllFreeTime', loginRouter);
 app.use('/getTest', loginRouter);
 app.use('/saveTodoList', loginRouter);
+app.use('/clearTodoList', loginRouter);
 app.use('/', loginRouter);
 // 路由未找到（404）
 app.use(function (req, res, next) {

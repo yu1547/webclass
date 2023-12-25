@@ -56,7 +56,7 @@ app.post('/login', async (req, res) => {
     req.session.isLoggedIn = true;
     // 檢查 'tests' 陣列是否有元素
     console.log(user.data.tests.length)
-    if (user.data.tests.length > 0) {
+    if (user.data.todoList.length > 0) {
         // 如果有，則傳送 'calculate' 路由的 URL
         res.json({ redirect: '/calendar.html' });
     } else {
@@ -300,15 +300,31 @@ app.get('/getTest', async (req, res) => {
 
 // 更新使用者的資料
 app.put('/saveTodoList', async (req, res) => {
-    const user = await User.findOne({ username: req.params.username });
+    // 從session中獲取用戶名稱
+    var username = req.session.user.username;
+
+    // 從資料庫中獲取用戶資料
+    var user = await User.findOne({ username: username });
     if (!user) {
         return res.status(404).send('User not found');
     }
-    user.data = req.body;
+    user.data.todoList = req.body;
     await user.save();
     res.send(user);
 });
+app.put('/clearTodoList', async (req, res) => {
+    // 從session中獲取用戶名稱
+    var username = req.session.user.username;
 
+    // 從資料庫中獲取用戶資料
+    var user = await User.findOne({ username: username });
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+    user.data.todoList = [];
+    await user.save();
+    res.send(user);
+});
 
 app.listen(3000, () => console.log('Server is running on port 3000...'));
 module.exports = router;

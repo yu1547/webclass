@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Planner</title>
@@ -89,15 +91,15 @@
         <h1>Schedule Planner</h1>
     </header>
     <div id="navbar">
-        <a href="dashboard.html" class="navbar-item">重新調整</a>
+        <a href="#" class="navbar-item" id="reset">重新調整</a>
     </div>
     <ul id="ToDoList">
 
     </ul>
 
     <script>
-        let unscheduledSubjectsList = [];
-
+        let tests = [];
+        let freeTime = [];
         // const tests = [
         //     {
         //         name: "期末考",
@@ -122,7 +124,24 @@
         //     }
         // ];
         // 在客戶端
+        let unscheduledSubjectsList = [];
         $(document).ready(function () {
+            $('#reset').click(function (e) {
+                e.preventDefault();
+                const username = sessionStorage.getItem('username'); // 從 session 中獲取 username
+                const confirmReset = confirm('此操作將會使todolist清除，是否真的要清除？');
+                if (confirmReset) {
+                    $.ajax({
+                        url: '/clearTodoList',
+                        type: 'PUT',
+                        success: function (data) {
+                            console.log('TodoList cleared successfully');
+                            window.location.href = 'dashboard.html';
+                        }
+                    });
+                }
+            });
+
             $.ajax({
                 url: '/getTest',
                 type: 'GET',
@@ -132,13 +151,15 @@
                         displayTodoList(data.todoList);
                     } else {
                         // 否則，計算新的 todolist
-                        const newTodoList = calculateTodoList(data.tests, data.freeTime);
-                        displayTodoList(newTodoList);
+                        tests = data.tests;
+                        freeTime = data.freeTime;
+                        resetSchedule();
+                        displayTodoList(resultList);
                         // 儲存新的 todolist
                         $.ajax({
-                            url: '/saveTodoList' + username,
+                            url: '/saveTodoList',
                             type: 'PUT',
-                            data: JSON.stringify({ todoList: newTodoList }),
+                            data: JSON.stringify({ todoList: resultList }),
                             contentType: 'application/json',
                             success: function (data) {
                                 console.log('TodoList saved successfully');
@@ -224,6 +245,28 @@
             console.log("End resetSchedule"); // 新增這行
             resultList = resultList.filter(item => item.date >= currentDate);
 
+            // resultList.forEach(item => {
+            //     const minutes = item.date.getMinutes().toString().padStart(2, '0');
+            //     const hours = item.date.getHours().toString().padStart(2, '0');
+            //     const listItem = document.createElement("li");
+            //     listItem.className = "schedule-item";
+            //     listItem.innerHTML = `
+            //             <strong>${item.name}</strong><br>
+            //             Date: ${item.date.toLocaleDateString()}<br>
+            //             Time: ${hours}:${minutes}<br>
+            //             Subject: ${item.subject} (剩下${item.clock}&#127813)<br>
+            //             <label class="checkbox-label">
+            //                 <input type="checkbox"> Finish
+            //             </label>
+            //             <br>
+            //         `;
+            //     ToDoListElement.appendChild(listItem);
+            // });
+
+            // 現在在生成完行程表後檢查未能安排的科目
+            checkUnscheduledSubjects();
+        }
+        function displayTodoList() {
             resultList.forEach(item => {
                 const minutes = item.date.getMinutes().toString().padStart(2, '0');
                 const hours = item.date.getHours().toString().padStart(2, '0');
@@ -241,9 +284,6 @@
                     `;
                 ToDoListElement.appendChild(listItem);
             });
-
-            // 現在在生成完行程表後檢查未能安排的科目
-            checkUnscheduledSubjects();
         }
 
         function checkUnscheduledSubjects() {
