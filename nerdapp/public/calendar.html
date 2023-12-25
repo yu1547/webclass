@@ -96,7 +96,7 @@
     <ul id="ToDoList">
 
     </ul>
-
+<script src="calendar.js"></script>
     <script>
         let tests = [];
         let FreeTime = [];
@@ -234,7 +234,7 @@
                     const selectedItem = findBestSubject(tests);
                     console.log(typeof selectedItem.date, selectedItem.date); //檢查selectedItem.date 是不是Date物件
                     
-                    const isDayFree = isDayInFreeTime(selectedItem.date, FreeTime);
+                    const isDayFree = isDayInFreeTime(selectedItem.date.toLocaleDateString('en-US', { weekday: 'long' }), FreeTime);
 
                     
                     if (isDayFree){

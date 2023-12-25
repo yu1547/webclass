@@ -3,25 +3,34 @@ let unscheduledSubjectsList = [];
 const tests = [
     {
         name: "期末考",
-        date: new Date("2024-1-1"),
+        date: new Date("2023-12-31"),
         importance: 6,
         subject: [
             { name: "數學", clock: 4, finish: 0 },
-            { name: "物理", clock: 3, finish: 0 }
         ],
         finish: 0,
         total: 0
     },
     {
         name: "微積分小考",
-        date: new Date("2024-1-31"),
+        date: new Date("2023-1-31"),
         importance: 2,
         subject: [
-            { name: "微積分", clock: 13, finish: 0 },
+            { name: "微積分", clock: 5, finish: 0 },
         ],
         finish: 0,
         total: 0
-    }
+    },
+    {
+        name: "物理小考",
+        date: new Date("2023-1-31"),
+        importance: 2,
+        subject: [
+            { name: "物理", clock: 5, finish: 0 },
+        ],
+        finish: 0,
+        total: 0
+    },
 ];
 
 let resultList = [];
@@ -43,7 +52,6 @@ const FreeTime = [
     startTime: "10:00 AM",
     endTime: "01:00 PM",
 },
-// Add more time slots for other days as needed
 ]
 
 // 函數：檢查某個時間是否在使用者的空閒時間範圍內
@@ -77,8 +85,18 @@ return 60;
 }
 
 function findBestSubject(tests) {
-return tests[0];
+    // 根據日期和重要性排序科目
+    const sortedTests = tests.sort((a, b) => {
+        if (a.date < b.date) return -1;
+        if (a.date > b.date) return 1;
+        // 如果日期相同，按重要性排序
+        return b.importance - a.importance;
+    });
+
+    // 返回排序後的第一個科目
+    return sortedTests[0];
 }
+
 
 const ToDoListElement = document.getElementById("ToDoList");
 
@@ -141,6 +159,24 @@ while (tests.length > 0) {
 }
 
 resultList = resultList.filter(item => item.date >= currentDate);
+
+resultList.forEach(item => {
+    const minutes = item.date.getMinutes().toString().padStart(2, '0');
+    const hours = item.date.getHours().toString().padStart(2, '0');
+    const listItem = document.createElement("li");
+    listItem.className = "schedule-item";
+    listItem.innerHTML = `
+            <strong>${item.name}</strong><br>
+            Date: ${item.date.toLocaleDateString()}<br>
+            Time: ${hours}:${minutes}<br>
+            Subject: ${item.subject} (剩下${item.clock}&#127813)<br>
+            <label class="checkbox-label">
+                <input type="checkbox"> Finish
+            </label>
+            <br>
+        `;
+    ToDoListElement.appendChild(listItem);
+});
 
 checkUnscheduledSubjects();
 }
