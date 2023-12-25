@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Planner</title>
@@ -89,7 +91,7 @@
         <h1>Schedule Planner</h1>
     </header>
     <div id="navbar">
-        <a href="dashboard.html" class="navbar-item">重新調整</a>
+        <a href="#" class="navbar-item" id="reset">重新調整</a>
     </div>
     <ul id="ToDoList">
 
@@ -97,6 +99,209 @@
 
     <script src="calendar.js">
 </script>
+    <script>
+        let tests = [];
+        let freeTime = [];
+        // const tests = [
+        //     {
+        //         name: "期末考",
+        //         date: new Date("2023-12-31"),
+        //         importance: 6,
+        //         subject: [
+        //             { name: "數學", clock: 4, finish: 0 },
+        //             { name: "物理", clock: 3, finish: 0 }
+        //         ],
+        //         finish: 0,
+        //         total: 0
+        //     },
+        //     {
+        //         name: "微積分小考",
+        //         date: new Date("2023-1-31"),
+        //         importance: 2,
+        //         subject: [
+        //             { name: "微積分", clock: 13, finish: 0 },
+        //         ],
+        //         finish: 0,
+        //         total: 0
+        //     }
+        // ];
+        // 在客戶端
+        let unscheduledSubjectsList = [];
+        $(document).ready(function () {
+            $('#reset').click(function (e) {
+                e.preventDefault();
+                const username = sessionStorage.getItem('username'); // 從 session 中獲取 username
+                const confirmReset = confirm('此操作將會使todolist清除，是否真的要清除？');
+                if (confirmReset) {
+                    $.ajax({
+                        url: '/clearTodoList',
+                        type: 'PUT',
+                        success: function (data) {
+                            console.log('TodoList cleared successfully');
+                            window.location.href = 'dashboard.html';
+                        }
+                    });
+                }
+            });
+
+            $.ajax({
+                url: '/getTest',
+                type: 'GET',
+                success: function (data) {
+                    // 如果使用者有儲存過 todolist，那麼就使用這個 todolist
+                    if (data.todoList.length > 0) {
+                        displayTodoList(data.todoList);
+                    } else {
+                        // 否則，計算新的 todolist
+                        tests = data.tests;
+                        freeTime = data.freeTime;
+                        resetSchedule();
+                        displayTodoList(resultList);
+                        // 儲存新的 todolist
+                        $.ajax({
+                            url: '/saveTodoList',
+                            type: 'PUT',
+                            data: JSON.stringify({ todoList: resultList }),
+                            contentType: 'application/json',
+                            success: function (data) {
+                                console.log('TodoList saved successfully');
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+
+        let resultList = [];
+
+        function calculateWeight(exam, currentDate) {
+            const daysDifference = Math.ceil((exam.date - currentDate) / (1000 * 60 * 60 * 24));
+            // 如果考試當天，將權重設為一個較大的數字（例如10），避免使用Infinity
+            return daysDifference === 0 ? 10 : exam.importance / daysDifference;
+        }
+
+
+        function findAvailableTime(currentDate) {
+            return 60;
+        }
+
+        function findBestSubject(tests) {
+            return tests[0];
+        }
+
+        const ToDoListElement = document.getElementById("ToDoList");
+
+        const currentDate = new Date();
+        const tomorrow = new Date(currentDate);
+        tomorrow.setDate(currentDate.getDate() + 1);
+
+        function resetSchedule() {
+            console.log("Start resetSchedule"); // 新增這行
+
+            ToDoListElement.innerHTML = ""; // 清空 ToDoList
+            unscheduledSubjectsList = []; // 清空未能安排的科目列表
+
+            while (tests.length > 0) {
+                console.log("Inside loop"); // 新增這行
+
+                let availableTime = findAvailableTime(tomorrow);
+
+                if (availableTime >= 25) {
+                    console.log("Inside if statement"); // 新增這行
+
+                    const selectedItem = findBestSubject(tests);
+                    const todoItem = {
+                        name: selectedItem.name,
+                        date: new Date(tomorrow),
+                        importance: selectedItem.importance,
+                        subject: selectedItem.subject[0].name,
+                        clock: selectedItem.subject[0].clock,
+                        finish: 0,
+                        weight: calculateWeight(selectedItem, currentDate)
+                    };
+
+                    selectedItem.subject[0].clock -= 1;
+                    if (selectedItem.subject[0].clock === 0) {
+                        tests.splice(tests.indexOf(selectedItem), 1);
+                    }
+
+                    availableTime -= 25;
+
+                    resultList.push(todoItem);
+                    tomorrow.setMinutes(tomorrow.getMinutes() + 25);
+
+                    if (resultList.length % 3 === 0) {
+                        const breakElement = document.createElement("br");
+                        ToDoListElement.appendChild(breakElement);
+                    }
+                } else {
+                    console.log("Inside else statement"); // 新增這行
+                    // 若無法安排，將科目添加到未能安排的科目列表
+                    const unscheduledSubject = tests.shift();
+                    unscheduledSubjectsList.push(unscheduledSubject);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    tomorrow.setHours(9, 0);
+                }
+            }
+            console.log("End resetSchedule"); // 新增這行
+            resultList = resultList.filter(item => item.date >= currentDate);
+
+            // resultList.forEach(item => {
+            //     const minutes = item.date.getMinutes().toString().padStart(2, '0');
+            //     const hours = item.date.getHours().toString().padStart(2, '0');
+            //     const listItem = document.createElement("li");
+            //     listItem.className = "schedule-item";
+            //     listItem.innerHTML = `
+            //             <strong>${item.name}</strong><br>
+            //             Date: ${item.date.toLocaleDateString()}<br>
+            //             Time: ${hours}:${minutes}<br>
+            //             Subject: ${item.subject} (剩下${item.clock}&#127813)<br>
+            //             <label class="checkbox-label">
+            //                 <input type="checkbox"> Finish
+            //             </label>
+            //             <br>
+            //         `;
+            //     ToDoListElement.appendChild(listItem);
+            // });
+
+            // 現在在生成完行程表後檢查未能安排的科目
+            checkUnscheduledSubjects();
+        }
+        function displayTodoList() {
+            resultList.forEach(item => {
+                const minutes = item.date.getMinutes().toString().padStart(2, '0');
+                const hours = item.date.getHours().toString().padStart(2, '0');
+                const listItem = document.createElement("li");
+                listItem.className = "schedule-item";
+                listItem.innerHTML = `
+                        <strong>${item.name}</strong><br>
+                        Date: ${item.date.toLocaleDateString()}<br>
+                        Time: ${hours}:${minutes}<br>
+                        Subject: ${item.subject} (剩下${item.clock}&#127813)<br>
+                        <label class="checkbox-label">
+                            <input type="checkbox"> Finish
+                        </label>
+                        <br>
+                    `;
+                ToDoListElement.appendChild(listItem);
+            });
+        }
+
+        function checkUnscheduledSubjects() {
+            const unscheduledSubjectsString = unscheduledSubjectsList
+                .map(subject => `${subject.name} (剩餘${subject.subject[0].clock}小時)`)
+                .join(", ");
+
+            if (unscheduledSubjectsString) {
+                window.alert(`以下科目未能排入日程表: ${unscheduledSubjectsString}`);
+            }
+        }
+
+
+        // 初始化頁面時執行一次
+        resetSchedule();
+    </script>
 </body>
 
 </html>

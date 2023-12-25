@@ -353,7 +353,9 @@
                 type: 'GET',
                 success: function (data) {
                     data.forEach(function (exam) {
-                        $('#studyTableBody').append('<tr><td>' + exam.name + '</td><td>' + exam.date + '</td><td><button class="addButton" data-exam="' + exam.name + '"onclick="goToAddSubjectPage(\'' + exam.name + '\')">新增科目</button></td><td><button class="deleteButton" data-exam="' + exam.name + '"onclick="deleteTest(\'' + exam.name + '\')"">刪除考試</button></td></tr>');
+                        var date =new Date(exam.date); 
+                        var yearMonthDay = date.toISOString().split('T')[0];
+                        $('#studyTableBody').append('<tr><td>' + exam.name + '</td><td>' + yearMonthDay + '</td><td><button class="addButton" data-exam="' + exam.name + '"onclick="goToAddSubjectPage(\'' + exam.name + '\')">新增科目</button></td><td><button class="deleteButton" data-exam="' + exam.name + '"onclick="deleteTest(\'' + exam.name + '\')"">刪除考試</button></td></tr>');
                     });
                 }
             });
