@@ -229,11 +229,12 @@
                 let availableTime = findAvailableTime(tomorrow);
 
                 if (availableTime >= 25) {
-                    console.log("Inside if statement"); // 新增這行
-                    console.log(typeof selectedItem.date, selectedItem.date);  //檢查selectedItem.date 是不是Date物件
+                    console.log("Inside if statement"); // 新增這行 
 
                     const selectedItem = findBestSubject(tests);
-                    const isDayFree = isDayInFreeTime(selectedItem.date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase(), FreeTime);
+                    console.log(typeof selectedItem.date, selectedItem.date); //檢查selectedItem.date 是不是Date物件
+                    
+                    const isDayFree = isDayInFreeTime(selectedItem.date, FreeTime);
 
                     
                     if (isDayFree){
