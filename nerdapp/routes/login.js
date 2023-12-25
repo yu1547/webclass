@@ -1,7 +1,7 @@
 const express = require('express');
 var router = express.Router();
 const session = require('express-session');
-const { CyclicSessionStore } = require("@cyclic.sh/session-store");
+// const { CyclicSessionStore } = require("@cyclic.sh/session-store");
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
