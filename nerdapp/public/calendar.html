@@ -15,10 +15,11 @@
         }
 
         .schedule-item {
+            font-family:'Courier New', Courier, monospace;
             margin-bottom: 10px;
-            padding: 10px;
+            padding: 10px 20px 10px 20px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 10px;
         }
 
         .checkbox-label {
@@ -125,12 +126,9 @@
                 Time: ${item.date.getHours()}:${item.date.getMinutes()}<br>
                 Subject: ${item.subject} (${item.clock} mins)<br>
                 <label class="checkbox-label">
-                    <input type="checkbox"> Review
+                    <input type="checkbox"> Finish
                 </label>
                 <br>
-                Importance: ${item.importance}<br>
-                Finish: ${item.finish} mins<br>
-                Weight: ${item.weight}
             `;
             ToDoListElement.appendChild(listItem);
         });
