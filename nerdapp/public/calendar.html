@@ -354,7 +354,7 @@
             };
         
             $.ajax({
-                url: "/saveData",  // 確保這個 URL 與你的後端應用中的路由相對應
+                url: "/saveEvent",  // 確保這個 URL 與你的後端應用中的路由相對應
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({ data: yourDataObject }),
@@ -388,9 +388,6 @@
         // Fetch events when the calendar is rendered
         fetchSubjects();
         fetchCalendar();
-        
-
-        
 
         function updateChart() {
             // 讀取今天的代辦事項列表

@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./users');
 const path = require('path');
-const Event = require('./event');
+
 
 app.post('/saveExam', async (req, res) => {
     const user = req.session.user;
