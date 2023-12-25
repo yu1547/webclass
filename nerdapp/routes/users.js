@@ -22,7 +22,7 @@ const freeTimeSchema = new mongoose.Schema({
     end: String,
 });
 
-const calenderSchema = new mongoose.Schema({
+const todoListSchema = new mongoose.Schema({
     name: String, // 安排科目
     date: Date, // 時段
     finish :Boolean //有沒有完成
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
     data: {
         tests: [testSchema], // 考試們
         freeTime: [freeTimeSchema], // 空閒時間
-        calender: [calenderSchema] // 安排閱讀的日期與時間
+        todoList: [todoListSchema] // 安排閱讀的日期與時間
     }
 });
 

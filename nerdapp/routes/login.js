@@ -284,24 +284,31 @@ app.post('/clearAllFreeTime', async function (req, res) {
             res.status(500).send('清除空閒時間失敗。');
         });
 });
-// 路由處理器 - 獲取考試數據
-router.get('/getExams', async function(req, res, next) {
-    // 從數據庫中獲取考試數據
-    let user = await User.findOne({ username: req.session.user.username });
-    var exams = user.data.tests;
 
-    // 將考試數據返回給客戶端
-    res.json({ exams: exams });
+// 獲取使用者的資料
+app.get('/getTest', async (req, res) => {
+    // 從session中獲取用戶名稱
+    var username = req.session.user.username;
+
+    // 從資料庫中獲取用戶資料
+    var user = await User.findOne({ username: username });
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+    res.send(user.data);
 });
 
-// 路由處理器 - 獲取空閒時間數據
-router.get('/getFreeTime', async function(req, res, next) {
-    // 從數據庫中獲取空閒時間數據
-    let user = await User.findOne({ username: req.session.user.username });
-    var freeTime = user.data.freeTime;
-
-    // 將空閒時間數據返回給客戶端
-    res.json({ freeTime: freeTime });
+// 更新使用者的資料
+app.put('/saveTodoList', async (req, res) => {
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) {
+        return res.status(404).send('User not found');
+    }
+    user.data = req.body;
+    await user.save();
+    res.send(user);
 });
+
+
 app.listen(3000, () => console.log('Server is running on port 3000...'));
 module.exports = router;
