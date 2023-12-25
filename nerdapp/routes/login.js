@@ -8,23 +8,23 @@ const mongoose = require('mongoose');
 const User = require('./users');
 const app = express();
 const path = require('path');
-const options = {
-    table: {
-        name: process.env.CYCLIC_DB,
-    },
-};
+// const options = {
+//     table: {
+//         name: process.env.CYCLIC_DB,
+//     },
+// };
 
-app.use(
-    session({
-        store: new CyclicSessionStore(options),
-        // other session options
-    })
-);
-// app.use(session({
-//     secret: 'your_secret_key',
-//     resave: false,
-//     saveUninitialized: true,
-// }));
+// app.use(
+//     session({
+//         store: new CyclicSessionStore(options),
+//         // other session options
+//     })
+// );
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true,
+}));
 
 const checkLoginMiddleware = (req, res, next) => {
     // 假設你有一個表示登入狀態的變數，例如 isLoggedIn
@@ -68,8 +68,7 @@ app.post('/login', async (req, res) => {
     req.session.user = user; // 將使用者資訊儲存到 session 中
     req.session.isLoggedIn = true;
     // 檢查 'tests' 陣列是否有元素
-    console.log(user.data.tests.length)
-    if (user.data.todoList.length > 0) {
+    if (user.data.todoList) {
         // 如果有，則傳送 'calculate' 路由的 URL
         res.json({ redirect: '/calendar.html' });
     } else {
