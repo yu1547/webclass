@@ -36,29 +36,28 @@
 
     <script>
         const tests = [
-        	{
-            	name: "期末考",
-            	date: new Date("2023-12-31"),
-            	importance: 6,
-            	subject: [
-                	{ name: "數學", clock: 4, finish: 0 },
-                	{ name: "物理", clock: 3, finish: 0 }
-            	],
-            	finish: 0,
-            	total: 0
-        	},
-        	{
-            	name: "微積分",
-            	date: new Date("2023-1-31"),
-            	importance: 2,
-            	subject: [
-                	{ name: "微積分", clock:13, finish: 0 },
-            	],
-            	finish: 0,
-            	total: 0
-        	}
-    	];
-
+            {
+                name: "期末考",
+                date: new Date("2023-12-31"),
+                importance: 6,
+                subject: [
+                    { name: "數學", clock: 4, finish: 0 },
+                    { name: "物理", clock: 3, finish: 0 }
+                ],
+                finish: 0,
+                total: 0
+            },
+            {
+                name: "微積分小考",
+                date: new Date("2023-1-31"),
+                importance: 2,
+                subject: [
+                    { name: "微積分", clock: 13, finish: 0 },
+                ],
+                finish: 0,
+                total: 0
+            }
+        ];
 
         let resultList = [];
 
@@ -92,7 +91,7 @@
                 const selectedItem = findBestSubject(tests);
                 const todoItem = {
                     name: selectedItem.name,
-                    date: tomorrow,
+                    date: new Date(tomorrow), // Create a new date object to avoid reference issues
                     importance: selectedItem.importance,
                     subject: selectedItem.subject[0].name,
                     clock: selectedItem.subject[0].clock,
@@ -108,23 +107,29 @@
                 availableTime -= 25;
 
                 resultList.push(todoItem);
+                ToMaTo=selectedItem.subject[0].clock;
+                // Add the time spent on the subject to the next item
+                tomorrow.setMinutes(tomorrow.getMinutes() + 25*ToMaTo);
+            } else {
+                // If there's not enough time, move to the next day
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(9, 0); // Reset to the beginning of the day
             }
-
-            tomorrow.setDate(tomorrow.getDate() + 1);
         }
 
         // 過濾時間早於考試日期的科目
         resultList = resultList.filter(item => item.date >= currentDate);
 
-
         resultList.forEach(item => {
+            const minutes = item.date.getMinutes().toString().padStart(2, '0');
+            const hours = item.date.getHours().toString().padStart(2, '0');
             const listItem = document.createElement("li");
             listItem.className = "schedule-item";
             listItem.innerHTML = `
                 <strong>${item.name}</strong><br>
                 Date: ${item.date.toLocaleDateString()}<br>
-                Time: ${item.date.getHours()}:${item.date.getMinutes()}<br>
-                Subject: ${item.subject} (${item.clock} mins)<br>
+                Time: ${hours}:${minutes}<br>
+                Subject: ${item.subject} ( ${item.clock} &#127813 )<br>
                 <label class="checkbox-label">
                     <input type="checkbox"> Finish
                 </label>
