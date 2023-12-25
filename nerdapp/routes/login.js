@@ -1,12 +1,30 @@
 const express = require('express');
 var router = express.Router();
 const session = require('express-session');
+const { CyclicSessionStore } = require("@cyclic.sh/session-store");
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./users');
 const app = express();
 const path = require('path');
+const options = {
+    table: {
+        name: process.env.CYCLIC_DB,
+    },
+};
+
+app.use(
+    session({
+        store: new CyclicSessionStore(options),
+        // other session options
+    })
+);
+// app.use(session({
+//     secret: 'your_secret_key',
+//     resave: false,
+//     saveUninitialized: true,
+// }));
 
 const checkLoginMiddleware = (req, res, next) => {
     // 假設你有一個表示登入狀態的變數，例如 isLoggedIn
@@ -20,11 +38,6 @@ const checkLoginMiddleware = (req, res, next) => {
     // 如果使用者已登入，繼續執行下一個中介軟體或路由處理
     next();
 };
-app.use(session({
-    secret: 'your_secret_key',
-    resave: false,
-    saveUninitialized: true,
-}));
 
 
 // 處理 GET 請求
@@ -89,13 +102,13 @@ app.post('/register', async (req, res) => {
     res.send(user);
 });
 
-app.get('/dashboard.html',  checkLoginMiddleware,(req, res) => {
+app.get('/dashboard.html', checkLoginMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/dashboard.html'));
 });
-app.get('/calendar.html',  checkLoginMiddleware,(req, res) => {
+app.get('/calendar.html', checkLoginMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/calendar.html'));
 });
-app.get('/obj.html',  checkLoginMiddleware,(req, res) => {
+app.get('/obj.html', checkLoginMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, '../public/obj.html'));
 });
 
@@ -104,8 +117,10 @@ app.get('/obj.html',  checkLoginMiddleware,(req, res) => {
 app.post('/saveExam', async (req, res) => {
     let user = await User.findOne({ username: req.session.user.username });
     if (user) {
-        user.data.tests.push({ name: req.body.name, date: req.body.date, subject: [], importance: req.body.importance  ,finish:0,//目前進度
-        total:0});
+        user.data.tests.push({
+            name: req.body.name, date: req.body.date, subject: [], importance: req.body.importance, finish: 0,//目前進度
+            total: 0
+        });
         await user.save();
         res.send('考試已儲存');
     } else {
@@ -175,7 +190,7 @@ app.post('/addSubject', async function (req, res) {
     var test = user.data.tests.find(test => test.name === testName);
 
     // 創建一個新的subject對象
-    var newSubject = { name: subjectName, clock: subjectClock,finish:0 };
+    var newSubject = { name: subjectName, clock: subjectClock, finish: 0 };
 
     // 將新的subject對象添加到對應的test中
     test.subject.push(newSubject);
