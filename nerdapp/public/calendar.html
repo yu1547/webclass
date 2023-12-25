@@ -173,68 +173,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-        // FullCalendar initialization
-        function fetchSubjects() {
-            $.ajax({
-                url: "/getExams",
-                type: 'GET',
-                success: function (data) {
-                    renderEvents(data.tests);
-                }
-            });
-        }
-
-        function fetchCalendar() {
-            $.ajax({
-                url: "/getFreeTime",
-                type: 'GET',
-                success: function (data) {
-                    renderFreeTime(data.freeTime);
-                }
-            });
-        }
-        function saveDataToServer() {
-            $.ajax({
-                url: "/saveData",  // Update this URL to match your server endpoint
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ data: yourDataObject }),  // Replace yourDataObject with the actual data
-                success: function (response) {
-                    console.log('Data saved successfully:', response);
-                },
-                error: function (error) {
-                    console.error('Error saving data:', error);
-                }
-            });
-        }
-            
-
-        $('#calendar').fullCalendar({
-            height: 590,
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay'
-            },
-            nowIndicator: true,
-            defaultView: 'month',
-            navLinks: true,
-            events: '/getEvents', // Load events from the server
-            eventClick: function (calEvent, jsEvent, view) {
-                // Handle event click if needed
-            }
-        });
-
-        // Fetch events when the calendar is rendered
-        fetchSubjects();
-        fetchCalendar();
-        
-        document.getElementById('saveButton').addEventListener('click', function () {
-            saveDataToServer();
-        });
-
-        // Countdown Timer
         var countdownDate = new Date("2023-12-31T23:59:59");
         var countdownElement = document.getElementById("countdown-timer");
 
@@ -255,7 +193,6 @@
             }
         }, 1000);
 
-        // To-Do List
         var todoList = document.getElementById("todo-items");
         var completedTasks;
         var tasks = ["Task 1", "Task 2", "Task 3", "Task 4", "Task 5"];
@@ -277,18 +214,7 @@
             // Append checkbox and label to listItem
             listItem.appendChild(checkbox);
             listItem.appendChild(label);
-        
-            // Add a change event listener to handle checkbox state changes
-            checkbox.addEventListener('change', function () {
-                if (checkbox.checked) {
-                    completedTasks.appendChild(listItem);
-                } else {
-                    todoList.appendChild(listItem);
-                }
-                updateChart();
-            });
-        
-            // Append listItem to todoList
+            
             todoList.appendChild(listItem);
         });
 
@@ -302,9 +228,7 @@
                 updateChart();
             }
         });
-
-        // Chart.js
-
+        
         var completedTasksChartContainer = document.getElementById("completion-chart-container");
         var ctx = document.getElementById('completion-chart').getContext('2d');
 
@@ -351,24 +275,253 @@
             },
         });
 
+        var dailyCompletedCount = 0;
+        document.addEventListener('DOMContentLoaded', function () {
+        // FullCalendar initialization
+        function fetchSubjects() {
+            $.ajax({
+                url: "/getExams",
+                type: 'GET',
+                success: function (data) {
+                    renderEvents(data.tests);
+                }
+            });
+        }
+
+        function fetchCalendar() {
+            $.ajax({
+                url: "/getFreeTime",
+                type: 'GET',
+                success: function (data) {
+                    renderFreeTime(data.freeTime);
+                }
+            });
+        }
+        function saveDataToServer() {
+            // yourDataObject 是一個包含數據的對象
+            var yourDataObject = {
+                data: {
+                    "tests": [
+                        {
+                            "name": "微積分",
+                            "date": {
+                                "$date": {
+                                    "$numberLong": "1706054400000"
+                                }
+                            },
+                            "importance": { "$numberInt": "2" },
+                            "subject": [
+                                {
+                                    "name": "微積分",
+                                    "clock": { "$numberInt": "16" },
+                                }
+                            ],
+                        },
+                        {
+                            "name": "期末考",
+                            "date": {
+                                "$date": {
+                                    "$numberLong": "1710806400000"
+                                }
+                            },
+                            "importance": { "$numberInt": "4" },
+                            "subject": [
+                                {
+                                    "name": "計算機概論",
+                                    "clock": { "$numberInt": "9" },
+                                },
+                                {
+                                    "name": "離散數學",
+                                    "clock": { "$numberInt": "6" },
+                                }
+                            ],
+                        }
+                    ],
+                    "freeTime": [
+                        {
+                            "day": "Mon",
+                            "start": "19:00",
+                            "end": "22:00",
+                        },
+                        {
+                            "day": "Mon",
+                            "start": "04:00",
+                            "end": "07:05",
+                        }
+                    ],
+                    "calender": []
+                }
+            };
+        
+            $.ajax({
+                url: "/saveData",  // 確保這個 URL 與你的後端應用中的路由相對應
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ data: yourDataObject }),
+                success: function (response) {
+                    console.log('Data saved successfully:', response);
+                },
+                error: function (error) {
+                    console.error('Error saving data:', error);
+                }
+            });
+        }
+        
+            
+
+        $('#calendar').fullCalendar({
+            height: 590,
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            nowIndicator: true,
+            defaultView: 'month',
+            navLinks: true,
+            events: '/getEvents', // Load events from the server
+            eventClick: function (calEvent, jsEvent, view) {
+                // Handle event click if needed
+            }
+        });
+
+        // Fetch events when the calendar is rendered
+        fetchSubjects();
+        fetchCalendar();
+        
+
+        
+
         function updateChart() {
-            var completedTasks = 1;
-            var todoItemsElement = 5;
+            // 讀取今天的代辦事項列表
+            var todoList = document.getElementById("todo-items");
+            // 所有的任務數
+            var totalTasks = todoList.childElementCount;
+    
+            // 完成的任務數
+            var completedCount = 0;
+    
+            // 遍歷每個任務，統計完成的任務數
+            for (var i = 0; i < totalTasks; i++) {
+                var task = todoList.children[i];
+                var checkbox = task.querySelector('input[type="checkbox"]');
+    
+                if (checkbox.checked) {
+                    completedCount++;
+                }
+            }
+            // 更新今日完成的番茄數
+            dailyCompletedCount = completedCount;
+    
+            // 更新 Chart.js 圖表
+            completionChart.data.datasets[0].data = [dailyCompletedCount, weeklyCompletion, monthlyCompletion];
+            completionChart.update();
+        }
+        async function addEventsToCalendar() {
+            try {
+                // 讀取測試和空閒時間
+                const tests = await $.get("/getExams");
+                const freeTime = await $.get("/getFreeTime");
+    
+                // 計算每個測試的總番茄數和目前完成的番茄數
+                tests.data.tests.forEach(test => {
+                    test.subject.forEach(subject => {
+                        // 假設有一個用於儲存番茄數的欄位
+                        subject.tomatoes = calculateTomatoes(subject.clock);
+                    });
+                });
+    
+                // 將科目添加到佇列，同時帶上權重值
+                const queue = tests.data.tests.map(test => ({
+                    subjects: test.subject,
+                    weight: test.importance,
+                }));
+    
+                // 從排日曆的當天開始，一直往後排，直到佇列為空
+                const currentDate = new Date();
+                while (queue.length > 0) {
+                    // 獲取當天的空閒時間
+                    const todayFreeTime = freeTime.data.freeTime.filter(time => {
+                        // Convert the start time of the time slot to a Date object
+                        const timeSlotStartDate = new Date(time.start);
+                    
+                        // Get the current date
+                        const currentDate = new Date();
+                    
+                        // Check if the time slot is for today
+                        const isToday = (
+                            timeSlotStartDate.getDate() === currentDate.getDate() &&
+                            timeSlotStartDate.getMonth() === currentDate.getMonth() &&
+                            timeSlotStartDate.getFullYear() === currentDate.getFullYear()
+                        );
+                    
+                        // Return true for time slots that are today
+                        return isToday;
+                    });                    
+    
+                    if (todayFreeTime.length > 0) {
+                        // 假設排序方法為按權重遞減排序
+                        queue.sort((a, b) => b.weight - a.weight);
+    
+                        // 假設時間段至少要有 25 分鐘
+                        const timeSlotDuration = 25; // in minutes
+    
+                        // 找到第一個符合條件的時間段
+                        const availableTimeSlot = todayFreeTime.find(timeSlot => {
+                            return (timeSlot.end - timeSlot.start) >= timeSlotDuration;
+                        });
+    
+                        if (availableTimeSlot) {
+                            // 計算當天的權重，排序，將權重最大的事件放入月曆
+                            const selectedEvent = queue.shift();
+                            await saveEventToCalendar(selectedEvent.subjects, availableTimeSlot.start, availableTimeSlot.end);
+    
+                            // 更新時間段，加上休息時間
+                            availableTimeSlot.start = availableTimeSlot.end + 5;
+    
+                            // 更新 Chart.js 圖表，加上完成的番茄數
+                            dailyCompletedCount += selectedEvent.subjects.reduce((acc, subject) => acc + subject.tomatoes, 0);
+                            updateChart();
+                        }
+                    }
+    
+                    // 當前日期加一天
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+    
+                console.log('Events added to calendar successfully.');
+            } catch (error) {
+                console.error(error);
+            }
+        }
 
-                var tasks = 5;
-                
-                var completedCount = 1;
+        function calculateTomatoes(clock) {
+            return Math.ceil(clock / 25); // 假設每 25 分鐘一個番茄
+        }
 
-                var completionPercentage = (completedCount / 5) * 100;
-
-                var weeklyTasksCount = 5 * 7;
-                var weeklyCompletion = (completedCount / weeklyTasksCount) * 100;
-
-                var monthlyTasksCount = 5 * 30;
-                var monthlyCompletion = (completedCount / monthlyTasksCount) * 100;
-
-                completionChart.data.datasets[0].data = [completionPercentage, weeklyCompletion, monthlyCompletion];
-                completionChart.update();
+        async function saveEventToCalendar(subjects, startTime, endTime) {
+            try {
+                const response = await fetch("/saveEvent", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        subjects,
+                        startTime,
+                        endTime,
+                    }),
+                });
+        
+                if (!response.ok) {
+                    throw new Error(`Failed to save event. Status: ${response.status}`);
+                }
+        
+                const data = await response.json();
+                console.log("Event saved successfully:", data);
+            } catch (error) {
+                console.error("Error saving event:", error);
+            }
         }
     });
 </script>

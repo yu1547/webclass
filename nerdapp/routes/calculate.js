@@ -8,6 +8,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./users');
 const path = require('path');
+const Event = require('./event');
 
 app.post('/saveExam', async (req, res) => {
     const user = req.session.user;
@@ -76,6 +77,32 @@ app.get('/getEvents', async (req, res) => {
     const events = [...exams, ...subjects, ...freeTimes];
 
     res.json(events);
+});
+
+app.post('/saveEvent', async (req, res) => {
+    try {
+        // 從請求主體中獲取數據
+        const { subjects, startTime, endTime } = req.body;
+
+        // 在這裡執行保存事件的邏輯，例如存儲在數據庫中
+
+        // 創建一個新的事件
+        const newEvent = new Event({
+            subjects,
+            startTime,
+            endTime,
+        });
+
+        // 將事件保存到數據庫
+        await newEvent.save();
+
+        // 返回成功的響應
+        res.status(200).json({ message: 'Event saved successfully' });
+    } catch (error) {
+        // 如果出現錯誤，返回錯誤的響應
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 module.exports = router;
