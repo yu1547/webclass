@@ -298,13 +298,15 @@
         }
 
 
+        let username = localStorage.getItem('username');
 
         function deleteTest(testName) {
             $.ajax({
                 url: '/deleteTest',
                 type: 'POST',
                 data: {
-                    testName: testName
+                    testName: testName,
+                    username:username
                 },
                 success: function (data) {
                     alert('考試已成功刪除！');
@@ -321,6 +323,7 @@
                 $.ajax({
                     url: '/clearAllData',
                     type: 'POST',
+                    data:{username:username},
                     success: function (data) {
                         alert('所有資料已成功清除！');
                         location.reload();
@@ -337,6 +340,7 @@
                 $.ajax({
                     url: '/clearAllFreeTime',
                     type: 'POST',
+                    data:{username:username},
                     success: function (data) {
                         alert('所有空閒時間已成功清除！');
                         location.reload();
@@ -362,6 +366,7 @@
             $.ajax({
                 url: "/getExams",
                 type: 'GET',
+                data:{username:username},
                 success: function (data) {
                     data.forEach(function (exam) {
                         var date = new Date(exam.date);
@@ -376,6 +381,7 @@
             $.ajax({
                 url: "/getFreeTime",
                 type: 'GET',
+                data:{username:username},
                 success: function (data) {
                     data.forEach(function (freeTime) {
                         $('#timeTableBody').append('<tr><td>' + freeTime.day + '</td><td>' + freeTime.start + ' - ' + freeTime.end + '</td></tr>');
@@ -397,11 +403,11 @@
                     alert('請填寫所有項目');
                     return;
                 }
-
+                var username = localStorage.getItem('username');
                 $.ajax({
                     url: "/saveExam",
                     type: 'POST',
-                    data: { name: test, date: yearMonthDay, importance: importance }, // 傳遞權重到伺服器端
+                    data: { username:username,name: test, date: yearMonthDay, importance: importance }, // 傳遞權重到伺服器端
                     success: function (data) {
                         alert(data);
                         $('#studyTableBody').append('<tr><td>' + test + '</td><td>' + yearMonthDay + '</td><td><button class="addButton" data-exam="' + test + '"onclick="goToAddSubjectPage(\'' + test + '\')">新增科目</button></td><td><button class="deleteButton" data-exam="' + test + '"onclick="deleteTest(\'' + test + '\')"">刪除考試</button></td></tr>');
@@ -430,7 +436,7 @@
                 $.ajax({
                     url: "/saveLeisure",
                     type: 'POST',
-                    data: { day: day, start: start, end: end },
+                    data: { username:username,day: day, start: start, end: end },
                     success: function (data) {
                         alert(data);
                         $('#timeTableBody').append('<tr><td>' + day + '</td><td>' + start + ' - ' + end + '</td></tr>');

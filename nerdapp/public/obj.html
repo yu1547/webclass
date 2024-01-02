@@ -226,13 +226,14 @@
         $(document).ready(function () {
             // 獲取考試名稱
             var testName = $('#testName').val();
-
+            let username = localStorage.getItem('username');
             // 發送GET請求到伺服器，獲取該科目的資訊
             $.ajax({
                 url: '/getSubjects',
                 type: 'GET',
                 data: {
-                    testName: testName
+                    testName: testName,
+                    username:username
                 },
                 success: function (data) {
                     // 將獲取到的科目資訊顯示在表格中
@@ -286,13 +287,15 @@
             $('#time-per-page').val('7');
 
             // 發送POST請求到伺服器
+            let username = localStorage.getItem('username');
             $.ajax({
                 url: '/addSubject',
                 type: 'POST',
                 data: {
                     testName: $('#testName').val(),
                     name: subject,
-                    clock: totalTomatoes
+                    clock: totalTomatoes,
+                    username:username
                 },
                 success: function (data) {
                     alert('科目已成功新增！');

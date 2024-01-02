@@ -147,9 +147,11 @@
                 const username = sessionStorage.getItem('username'); // 從 session 中獲取 username
                 const confirmReset = confirm('此操作將會使todolist清除，是否真的要清除？');
                 if (confirmReset) {
+                    let username = localStorage.getItem('username');
                     $.ajax({
                         url: '/clearTodoList',
                         type: 'PUT',
+                        data:{username:username},
                         success: function (data) {
                             console.log('TodoList cleared successfully');
                             window.location.href = 'dashboard.html';
@@ -157,9 +159,11 @@
                     });
                 }
             });
+            let username = localStorage.getItem('username');
             $.ajax({
                 url: '/getTest',
                 type: 'GET',
+                data:{username:username},
                 success: function (data) {
                     // 如果使用者有儲存過 todolist，那麼就使用這個 todolist
                     if (data.todoList.length >0) {
@@ -176,7 +180,7 @@
                         $.ajax({
                             url: '/saveTodoList',
                             type: 'PUT',
-                            data: JSON.stringify({ todoList: resultList }),
+                            data: JSON.stringify({ todoList: resultList,username:username }),
                             contentType: 'application/json',
                             success: function (data) {
                                 console.log('TodoList saved successfully');
