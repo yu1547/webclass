@@ -157,7 +157,8 @@
         }
 
         #clearAllButton,
-        #clearAllFreeTimeButton {
+        #clearAllFreeTimeButton,
+        #logoutButton {
             font-size: large;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             padding: 10px;
@@ -194,12 +195,12 @@
 <body>
     <button id="clearAllButton" style="position: absolute; top: 10px; right: 10px; ">清除所有資料</button>
     <button id="clearAllFreeTimeButton" style="position: absolute; top: 75px; right: 10px;">清除所有空閒時間</button>
-
+    <button id="logoutButton" style="position: absolute; top: 75px; left: 10px;">登出</button>
     <header>
         <h2>歡迎加入Nerd養成計畫 <br>
             預祝您考試順利發大財</h2>
-        <a href="https://www.canva.com/design/DAF39pFoWQc/zWbabTXtSmddcaQK1yj4dw/edit?utm_content=DAF39pFoWQc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="blank"
-            style="position: absolute;top: 30px;left:30px"><button>?</button></a>
+        <a href="https://www.canva.com/design/DAF39pFoWQc/zWbabTXtSmddcaQK1yj4dw/edit?utm_content=DAF39pFoWQc&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
+            target="blank" style="position: absolute;top: 30px;left:30px"><button>?</button></a>
     </header>
     <div style="position: fixed;bottom: 5px;left:5px">
         <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
@@ -290,11 +291,12 @@
     <script>
 
         function goToAddSubjectPage(testName) {
-            // 將考試名稱儲存到sessionStorage
-            sessionStorage.setItem('currentTest', testName);
+            // 將考試名稱儲存到localStorage
+            localStorage.setItem('currentTest', testName);
             // 跳轉到obj.html頁面
             window.location.href = 'obj.html';
         }
+
 
 
         function deleteTest(testName) {
@@ -347,13 +349,22 @@
         });
 
         $(document).ready(function () {
+            $('#logoutButton').click(function () {
+                // 清除 localStorage 中的登入狀態和用戶名
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                // 重定向到登入頁面
+                window.location.href = '/login';
+            });
+
+
             // 獲取已儲存的考試數據並顯示在表格中
             $.ajax({
                 url: "/getExams",
                 type: 'GET',
                 success: function (data) {
                     data.forEach(function (exam) {
-                        var date =new Date(exam.date); 
+                        var date = new Date(exam.date);
                         var yearMonthDay = date.toISOString().split('T')[0];
                         $('#studyTableBody').append('<tr><td>' + exam.name + '</td><td>' + yearMonthDay + '</td><td><button class="addButton" data-exam="' + exam.name + '"onclick="goToAddSubjectPage(\'' + exam.name + '\')">新增科目</button></td><td><button class="deleteButton" data-exam="' + exam.name + '"onclick="deleteTest(\'' + exam.name + '\')"">刪除考試</button></td></tr>');
                     });
@@ -376,7 +387,7 @@
             $('#addSubjectButton').click(function () {
                 event.preventDefault();
                 var test = $('#test').val();
-                var date =new Date($('#date').val()); 
+                var date = new Date($('#date').val());
                 var yearMonthDay = date.toISOString().split('T')[0];
                 console.log(yearMonthDay);  // 輸出 "2024-01-24"
 

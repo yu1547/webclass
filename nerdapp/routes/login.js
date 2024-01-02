@@ -1,34 +1,23 @@
 const express = require('express');
 var router = express.Router();
 const session = require('express-session');
-// const { CyclicSessionStore } = require("@cyclic.sh/session-store");
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const User = require('./users');
 const app = express();
 const path = require('path');
-// const options = {
-//     table: {
-//         name: process.env.CYCLIC_DB,
-//     },
-// };
 
-// app.use(
-//     session({
-//         store: new CyclicSessionStore(options),
-//         // other session options
-//     })
-// );
-app.use(session({
-    secret: 'your_secret_key',
-    resave: false,
-    saveUninitialized: true,
-}));
+// app.use(session({
+//     secret: 'your_secret_key',
+//     resave: false,
+//     saveUninitialized: true,
+// }));
 
+// 假設你有一個表示登入狀態的變數，例如 isLoggedIn
 const checkLoginMiddleware = (req, res, next) => {
-    // 假設你有一個表示登入狀態的變數，例如 isLoggedIn
-    const isLoggedIn = req.session.isLoggedIn; // 使用 session 保存登入狀態
+    // 使用 localStorage 保存登入狀態
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
     console.log("islogin", isLoggedIn);
     // 如果使用者未登入，重定向到登入頁面
     if (!isLoggedIn) {
@@ -38,7 +27,6 @@ const checkLoginMiddleware = (req, res, next) => {
     // 如果使用者已登入，繼續執行下一個中介軟體或路由處理
     next();
 };
-
 
 // 處理 GET 請求
 app.get('/', (req, res) => {
@@ -65,8 +53,9 @@ app.post('/login', async (req, res) => {
         return res.status(400).send('Invalid username or password.');
     }
 
-    req.session.user = user; // 將使用者資訊儲存到 session 中
-    req.session.isLoggedIn = true;
+    // 將使用者名稱儲存到 localStorage 中
+    localStorage.setItem('username', user.username);
+    localStorage.setItem('isLoggedIn', true);
     // 檢查 'tests' 陣列是否有元素
     if (user.data.todoList) {
         // 如果有，則傳送 'calculate' 路由的 URL
@@ -114,7 +103,7 @@ app.get('/obj.html', checkLoginMiddleware, (req, res) => {
 
 
 app.post('/saveExam', async (req, res) => {
-    let user = await User.findOne({ username: req.session.user.username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (user) {
         user.data.tests.push({
             name: req.body.name, date: req.body.date, subject: [], importance: req.body.importance, finish: 0,//目前進度
@@ -128,7 +117,7 @@ app.post('/saveExam', async (req, res) => {
 });
 //不用的
 app.post('/saveSubject/:examName', async (req, res) => {
-    let user = await User.findOne({ username: req.session.user.username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (user) {
         const exam = user.data.tests.find(test => test.name === req.params.examName);
         if (exam) {
@@ -144,7 +133,7 @@ app.post('/saveSubject/:examName', async (req, res) => {
 });
 
 app.post('/saveLeisure', async (req, res) => {
-    let user = await User.findOne({ username: req.session.user.username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (user) {
         user.data.freeTime.push(req.body);
         await user.save();
@@ -156,7 +145,7 @@ app.post('/saveLeisure', async (req, res) => {
 
 // 新增的路由
 app.get('/getExams', async (req, res) => {
-    let user = await User.findOne({ username: req.session.user.username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (user) {
         res.send(user.data.tests);
     } else {
@@ -165,7 +154,7 @@ app.get('/getExams', async (req, res) => {
 });
 
 app.get('/getFreeTime', async (req, res) => {
-    let user = await User.findOne({ username: req.session.user.username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (user) {
         res.send(user.data.freeTime);
     } else {
@@ -179,11 +168,8 @@ app.post('/addSubject', async function (req, res) {
     var subjectName = req.body.name;
     var subjectClock = req.body.clock;
 
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
     // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
 
     // 從用戶的考試中找到對應的考試
     var test = user.data.tests.find(test => test.name === testName);
@@ -210,11 +196,8 @@ app.get('/getSubjects', async function (req, res) {
     // 從請求中獲取考試名稱
     var testName = req.query.testName;
 
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
-    // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    // 獲取用戶資料
+    let user = await User.findOne({ username: localStorage.getItem('username') });
 
     // 從用戶的考試中找到對應的考試
     var test = user.data.tests.find(test => test.name === testName);
@@ -233,11 +216,7 @@ app.post('/deleteTest', async function (req, res) {
     // 從請求中獲取考試名稱
     var testName = req.body.testName;
 
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
-    // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
 
     // 從用戶的考試中找到並刪除對應的考試
     var testIndex = user.data.tests.findIndex(test => test.name === testName);
@@ -257,11 +236,7 @@ app.post('/deleteTest', async function (req, res) {
 });
 
 app.post('/clearAllData', async function (req, res) {
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
-    // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
 
     // 清除所有的考試和空閒時間
     user.data.tests = [];
@@ -279,11 +254,7 @@ app.post('/clearAllData', async function (req, res) {
 });
 
 app.post('/clearAllFreeTime', async function (req, res) {
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
-    // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
 
     // 清除所有的空閒時間
     user.data.freeTime = [];
@@ -301,11 +272,7 @@ app.post('/clearAllFreeTime', async function (req, res) {
 
 // 獲取使用者的資料
 app.get('/getTest', async (req, res) => {
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
-    // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (!user) {
         return res.status(404).send('User not found');
     }
@@ -314,11 +281,7 @@ app.get('/getTest', async (req, res) => {
 
 // 更新使用者的資料
 app.put('/saveTodoList', async (req, res) => {
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
-    // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (!user) {
         return res.status(404).send('User not found');
     }
@@ -327,11 +290,7 @@ app.put('/saveTodoList', async (req, res) => {
     res.send(user);
 });
 app.put('/clearTodoList', async (req, res) => {
-    // 從session中獲取用戶名稱
-    var username = req.session.user.username;
-
-    // 從資料庫中獲取用戶資料
-    var user = await User.findOne({ username: username });
+    let user = await User.findOne({ username: localStorage.getItem('username') });
     if (!user) {
         return res.status(404).send('User not found');
     }
