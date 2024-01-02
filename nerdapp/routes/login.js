@@ -87,14 +87,14 @@ app.post('/register', async (req, res) => {
 
     res.send(user);
 });
-
-app.get('/dashboard.html', checkLoginMiddleware, (req, res) => {
+// checkLoginMiddleware
+app.get('/dashboard.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/dashboard.html'));
 });
-app.get('/calendar.html', checkLoginMiddleware, (req, res) => {
+app.get('/calendar.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/calendar.html'));
 });
-app.get('/obj.html', checkLoginMiddleware, (req, res) => {
+app.get('/obj.html', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/obj.html'));
 });
 
