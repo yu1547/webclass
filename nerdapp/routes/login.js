@@ -127,8 +127,7 @@ app.post('/saveLeisure', async (req, res) => {
 
 // 新增的路由
 app.get('/getExams', async (req, res) => {
-    let user = await User.findOne({ username: req.body.username });
-    
+    let user = await User.findOne({ username: req.query.username });
     if (user) {
         res.send(user.data.tests);
     } else {
@@ -137,7 +136,7 @@ app.get('/getExams', async (req, res) => {
 });
 
 app.get('/getFreeTime', async (req, res) => {
-    let user = await User.findOne({ username: req.body.username });
+    let user = await User.findOne({ username: req.query.username });
     if (user) {
         res.send(user.data.freeTime);
     } else {
@@ -180,7 +179,7 @@ app.get('/getSubjects', async function (req, res) {
     var testName = req.query.testName;
 
     // 獲取用戶資料
-    let user = await User.findOne({ username: req.body.username });
+    let user = await User.findOne({ username: req.query.username });
     
     // 從用戶的考試中找到對應的考試
     var test = user.data.tests.find(test => test.name === testName);
@@ -254,7 +253,7 @@ app.post('/clearAllFreeTime', async function (req, res) {
 
 // 獲取使用者的資料
 app.get('/getTest', async (req, res) => {
-    let user = await User.findOne({ username: req.body.username });
+    let user = await User.findOne({ username: req.query.username });
     if (!user) {
         return res.status(404).send('User not found');
     }
