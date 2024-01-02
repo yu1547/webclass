@@ -225,6 +225,7 @@
     <script>
         $(document).ready(function () {
             // 獲取考試名稱
+            $('#testName').val(localStorage.getItem('currentTest'));
             var testName = $('#testName').val();
             let username = localStorage.getItem('username');
             // 發送GET請求到伺服器，獲取該科目的資訊
@@ -252,7 +253,6 @@
             $('#Save').click(function () {
                 window.location.href = 'dashboard.html';
             });
-            $('#testName').val(localStorage.getItem('currentTest'));
         });
 
 
