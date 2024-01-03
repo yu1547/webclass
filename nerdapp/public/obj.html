@@ -224,6 +224,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
+            // 檢查localStorage中的'isLoggedIn'項目
+            var isLoggedIn = localStorage.getItem('isLoggedIn');
+
+            // 如果用戶未登入，則重定向到登入頁面
+            if (!isLoggedIn) {
+                window.location.href = "/";
+            }
             // 獲取考試名稱
             $('#testName').val(localStorage.getItem('currentTest'));
             var testName = $('#testName').val();

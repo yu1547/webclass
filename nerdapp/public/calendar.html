@@ -81,6 +81,7 @@
             border-radius: 30px;
             border: none;
         }
+
         #logoutButton {
             font-size: large;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -135,6 +136,13 @@
         // 在客戶端
         let unscheduledSubjectsList = [];
         $(document).ready(function () {
+            // 檢查localStorage中的'isLoggedIn'項目
+            var isLoggedIn = localStorage.getItem('isLoggedIn');
+
+            // 如果用戶未登入，則重定向到登入頁面
+            if (!isLoggedIn) {
+                window.location.href = "/";
+            }
             $('#logoutButton').click(function () {
                 // 清除 localStorage 
                 localStorage.clear();
@@ -149,7 +157,7 @@
                     $.ajax({
                         url: '/clearTodoList',
                         type: 'PUT',
-                        data:{username:username},
+                        data: { username: username },
                         success: function (data) {
                             console.log('TodoList cleared successfully');
                             window.location.href = 'dashboard.html';
@@ -161,10 +169,10 @@
             $.ajax({
                 url: '/getTest',
                 type: 'GET',
-                data:{username:username},
+                data: { username: username },
                 success: function (data) {
                     // 如果使用者有儲存過 todolist，那麼就使用這個 todolist
-                    if (data.todoList.length >0) {
+                    if (data.todoList.length > 0) {
                         console.log(data.todoList)
                         displayTodoList(data.todoList);
                     } else {
@@ -178,7 +186,7 @@
                         $.ajax({
                             url: '/saveTodoList',
                             type: 'PUT',
-                            data: JSON.stringify({ todoList: resultList,username:username }),
+                            data: JSON.stringify({ todoList: resultList, username: username }),
                             contentType: 'application/json',
                             success: function (data) {
                                 console.log('TodoList saved successfully');
