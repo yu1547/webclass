@@ -59,7 +59,7 @@
 
         .study-info {
             box-sizing: border-box;
-            width: 40%;
+            width: 50%;
             font-size: large;
             color: #fff;
             background-color: #105aa7;
@@ -364,9 +364,9 @@
             var isLoggedIn = localStorage.getItem('isLoggedIn');
 
             // 如果用戶未登入，則重定向到登入頁面
-            if (!isLoggedIn) {
-                window.location.href = "/";
-            }
+            // if (!isLoggedIn) {
+            //     window.location.href = "/";
+            // }
             $('#logoutButton').click(function () {
                 // 清除 localStorage 
                 localStorage.clear();
