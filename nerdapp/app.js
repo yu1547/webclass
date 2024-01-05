@@ -34,6 +34,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // 掛載你的路由處理程序
 app.use('/users', usersRouter);
+app.use('/isLogin', loginRouter);
 app.use('/login', loginRouter); // 新增這行
 app.use('/register', loginRouter); // 新增這行
 app.use('/dashboard.html', loginRouter);
@@ -53,6 +54,7 @@ app.use('/getTest', loginRouter);
 app.use('/saveTodoList', loginRouter);
 app.use('/clearTodoList', loginRouter);
 app.use('/', loginRouter);
+
 // 路由未找到（404）
 app.use(function (req, res, next) {
   return res.status(404).send({ message: 'Route' + req.url + ' Not found.' });

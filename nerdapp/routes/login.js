@@ -54,16 +54,33 @@ app.post('/login', async (req, res) => {
     }
 
 
-    // 檢查 'tests' 陣列是否有元素
+    // 檢查 todoList 是否有元素
     if (user.data.todoList) {
         // 如果有，則傳送 'calculate' 路由的 URL
         res.json({ redirect: '/calendar.html' });
     } else {
         // 如果沒有，則傳送 'dashboard.html' 的 URL
-        // res.json({ redirect: '../public/dashboard.html' });
         res.json({ redirect: '/dashboard.html' });
 
     }
+});
+
+// 處理已登入請求
+app.post('/isLogin', async (req, res) => {
+    const user = await User.findOne({ username: req.body.username });
+    if (!user) {
+        return res.status(400).send('Invalid username or password.');
+    }
+
+    // 檢查 todoList 是否有元素
+    if (user.data.todoList) {
+        // 如果有，則傳送 'calculate' 路由的 URL
+        res.json({ redirect: '/calendar.html' });
+    } else {
+        // 如果沒有，則傳送 'dashboard.html' 的 URL
+        res.json({ redirect: '/dashboard.html' });
+    }
+    
 });
 
 
