@@ -28,7 +28,6 @@ const todoListSchema = new mongoose.Schema({
     time:String,
     subject:String,
     clock : Number,
-    //有沒有完成
 });
 
 const userSchema = new mongoose.Schema({
